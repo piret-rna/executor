@@ -10,6 +10,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <restlet.version>2.3.0</restlet.version>
   </properties>
 
   <name>piret-executor</name>
@@ -256,6 +257,14 @@
     </plugins>
   </reporting>
 
+  <repositories>
+    <repository>
+      <id>maven-restlet</id>
+      <name>Public online Restlet repository</name>
+      <url>http://maven.restlet.org</url>
+    </repository>
+  </repositories>
+
   <dependencies>
     <dependency>
       <groupId>joda-time</groupId>
@@ -282,6 +291,22 @@
       <artifactId>jcommander</artifactId>
       <version>1.58</version>
     </dependency>
+    <dependency>
+      <groupId>org.restlet.jse</groupId>
+      <artifactId>org.restlet</artifactId>
+      <version>${restlet.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.restlet.jse</groupId>
+      <artifactId>org.restlet.ext.simple</artifactId>
+      <version>${restlet.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.restlet.gae</groupId>
+      <artifactId>org.restlet.ext.jackson</artifactId>
+      <version>${restlet.version}</version>
+    </dependency>
+
   </dependencies>
 
   <organization>
