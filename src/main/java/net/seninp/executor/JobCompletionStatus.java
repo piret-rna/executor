@@ -1,5 +1,7 @@
 package net.seninp.executor;
 
-public class JobCompletionStatus {
+public enum JobCompletionStatus {
+
+  ENQUEUED, RUNNING, ERRORED, COMPLETED;
 
 }
