@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.seninp.executor.ClusterJobMapper">
+
+  <!-- DROP THE USER TABLE -->
+  <insert id="dropClusterJobTable">
+    DROP TABLE IF EXISTS CLUSTERJOB
+  </insert>
+
+  <!-- CREATE THE USER TABLE -->
+  <insert id="createClusterJobTable">
+    CREATE TABLE IF NOT EXISTS CLUSTERJOB (
+    id INTEGER IDENTITY PRIMARY KEY,
+    username varchar(255) NOT NULL,
+    jobid INTEGER,
+    command LONGVARCHAR,
+    start_time TIMESTAMP,
+    end_time TIMESTAMP,
+    job_status VARCHAR(64),
+    status_time TIMESTAMP
+    );
+  </insert>
+
+  <select id="getClusterJobTable" resultType="map">
+    SELECT * FROM
+    INFORMATION_SCHEMA.SYSTEM_TABLES
+    WHERE TABLE_SCHEM = 'PUBLIC'
+    AND TABLE_NAME = 'CLUSTERJOB'
+  </select>
+
+  <insert id="saveClusterJob" parameterType="net.seninp.executor.ClusterJob"
+    flushCache="true" statementType="PREPARED" useGeneratedKeys="true"
+    keyProperty="id" timeout="20">
+    INSERT INTO CLUSTERJOB
+    (USERNAME, JOBID, COMMAND, START_TIME, END_TIME, JOB_STATUS, STATUS_TIME)
+    VALUES
+    (#{username}, #{jobId}, #{command}, #{startTime}, #{endTime}, #{status}, #{statusTime})
+  </insert>
+
+  <resultMap type="net.seninp.executor.ClusterJob" id="usermap1">
+    <id column="id" property="id"/>
+    <result column="jobid" property="jobId"/>
+    <result column="command" property="command"/>
+    <result column="status" property="status"/>
+    <result column="username" property="username"/>
+    <result column="start_time" property="startTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+    <result column="end_time" property="endTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+    <result column="status_time" property="statusTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+  </resultMap>
+  <select id="getClusterJobById" parameterType="Long"
+    resultMap="usermap1">
+    SELECT * FROM CLUSTERJOB WHERE jobId = #{jobId}
+  </select>
+
+</mapper>

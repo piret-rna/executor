@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "mybatis-3-config.dtd">
+<configuration>
+  
+  <typeHandlers>
+    <typeHandler handler="org.apache.ibatis.type.LocalDateTimeTypeHandler" />
+  </typeHandlers>
+  
+  <environments default="development">
+    <environment id="development">
+      <transactionManager type="JDBC" />
+      <dataSource type="UNPOOLED">
+        <property name="driver" value="org.hsqldb.jdbcDriver" />
+        <property name="url" value="${url}" />
+        <property name="username" value="sa" />
+      </dataSource>
+    </environment>
+
+    <environment id="test">
+      <transactionManager type="JDBC" />
+      <dataSource type="UNPOOLED">
+        <property name="driver" value="org.hsqldb.jdbcDriver" />
+        <property name="url" value="${url}" />
+        <property name="username" value="sa" />
+      </dataSource>
+    </environment>
+  </environments>
+
+  <databaseIdProvider type="DB_VENDOR">
+    <property name="${productName.hsql:HSQL Database Engine}" value="hsql" />
+  </databaseIdProvider>
+
+  <mappers>
+    <mapper resource="ClusterJob.xml" />
+  </mappers>
+
+</configuration>
