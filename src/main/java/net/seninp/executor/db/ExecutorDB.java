@@ -2,14 +2,12 @@ package net.seninp.executor.db;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
 import java.util.Properties;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import net.seninp.executor.ClusterJob;
-import net.seninp.executor.JobCompletionStatus;
 import net.seninp.executor.util.StackTrace;
 
 /**
@@ -102,10 +100,7 @@ public class ExecutorDB {
       // add the test user if not in there
       ClusterJob testJob = session.selectOne("getClusterJobById", 0l);
       if (null == testJob) {
-        session.insert("saveClusterJob",
-            new ClusterJob("psenin", 0, Long.valueOf(new Date().getTime()),
-                Long.valueOf(new Date().getTime()), "test cmd", JobCompletionStatus.ENQUEUED,
-                Long.valueOf(new Date().getTime())));
+        session.insert("saveClusterJob", new ClusterJob("psenin", "test cmd", 4, 8));
         session.commit();
       }
 

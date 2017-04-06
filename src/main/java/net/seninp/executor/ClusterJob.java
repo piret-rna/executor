@@ -18,11 +18,15 @@ public class ClusterJob implements Serializable {
 
   private long jobId;
 
+  private String command;
+
+  private int resourceCpu;
+
+  private int resourceMem;
+
   private Long startTime;
 
   private Long endTime;
-
-  private String command;
 
   private JobCompletionStatus status;
 
@@ -32,26 +36,22 @@ public class ClusterJob implements Serializable {
     super();
   }
 
-  public ClusterJob(String username, long jobId, Long startTime, Long endTime, String command,
-      JobCompletionStatus status, Long statusTime) {
+  public ClusterJob(String username, String command, int resourceCpu, int resourceMem) {
     super();
     this.username = username;
-    this.jobId = jobId;
-    this.startTime = startTime;
-    this.endTime = endTime;
     this.command = command;
-    this.status = status;
-    this.statusTime = statusTime;
+    this.resourceCpu = resourceCpu;
+    this.resourceMem = resourceMem;
   }
 
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder();
     builder.append("ClusterJob [id=").append(id).append(", username=").append(username)
-        .append(", jobId=").append(jobId).append(", startTime=").append(startTime)
-        .append(", endTime=").append(endTime).append(", command=\'").append(command)
-        .append("\', status=").append(status).append(", statusTime=").append(statusTime)
-        .append("]");
+        .append(", jobId=").append(jobId).append(", command=").append(command)
+        .append(", resourceCpu=").append(resourceCpu).append(", resourceMem=").append(resourceMem)
+        .append(", startTime=").append(startTime).append(", endTime=").append(endTime)
+        .append(", status=").append(status).append(", statusTime=").append(statusTime).append("]");
     return builder.toString();
   }
 
@@ -60,12 +60,8 @@ public class ClusterJob implements Serializable {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((command == null) ? 0 : command.hashCode());
-    result = prime * result + (int) (endTime ^ (endTime >>> 32));
     result = prime * result + (int) (id ^ (id >>> 32));
     result = prime * result + (int) (jobId ^ (jobId >>> 32));
-    result = prime * result + (int) (startTime ^ (startTime >>> 32));
-    result = prime * result + ((status == null) ? 0 : status.hashCode());
-    result = prime * result + (int) (statusTime ^ (statusTime >>> 32));
     result = prime * result + ((username == null) ? 0 : username.hashCode());
     return result;
   }
@@ -85,17 +81,9 @@ public class ClusterJob implements Serializable {
     }
     else if (!command.equals(other.command))
       return false;
-    if (endTime != other.endTime)
-      return false;
     if (id != other.id)
       return false;
     if (jobId != other.jobId)
-      return false;
-    if (startTime != other.startTime)
-      return false;
-    if (status != other.status)
-      return false;
-    if (statusTime != other.statusTime)
       return false;
     if (username == null) {
       if (other.username != null)
@@ -168,6 +156,22 @@ public class ClusterJob implements Serializable {
 
   public void setId(long id) {
     this.id = id;
+  }
+
+  public int getResourceCpu() {
+    return resourceCpu;
+  }
+
+  public void setResourceCpu(int resourceCpu) {
+    this.resourceCpu = resourceCpu;
+  }
+
+  public int getResourceMem() {
+    return resourceMem;
+  }
+
+  public void setResourceMem(int resourceMem) {
+    this.resourceMem = resourceMem;
   }
 
 }

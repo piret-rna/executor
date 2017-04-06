@@ -15,6 +15,8 @@
     id INTEGER IDENTITY PRIMARY KEY,
     username varchar(255) NOT NULL,
     jobid INTEGER,
+    resource_cpu INTEGER,
+    resource_mem INTEGER,
     command LONGVARCHAR,
     start_time TIMESTAMP,
     end_time TIMESTAMP,
@@ -34,9 +36,9 @@
     flushCache="true" statementType="PREPARED" useGeneratedKeys="true"
     keyProperty="id" timeout="20">
     INSERT INTO CLUSTERJOB
-    (USERNAME, JOBID, COMMAND, START_TIME, END_TIME, JOB_STATUS, STATUS_TIME)
+    (USERNAME, JOBID, RESOURCE_CPU, RESOURCE_MEM, COMMAND, START_TIME, END_TIME, JOB_STATUS, STATUS_TIME)
     VALUES
-    (#{username}, #{jobId}, #{command}, 
+    (#{username}, #{jobId}, #{resourceCpu}, #{resourceMem}, #{command}, 
     #{startTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler}, 
     #{endTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
     #{status}, 
@@ -47,6 +49,8 @@
     <id column="id" property="id"/>
     <result column="jobid" property="jobId"/>
     <result column="command" property="command"/>
+    <result column="resource_cpu" property="resourceCpu"/>
+    <result column="resource_mem" property="resourceMem"/>
     <result column="status" property="status"/>
     <result column="username" property="username"/>
     <!--  <result column="start_time" property="startTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/> -->

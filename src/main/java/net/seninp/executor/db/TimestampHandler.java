@@ -21,18 +21,27 @@ public class TimestampHandler extends BaseTypeHandler<Long> {
   @Override
   public Long getNullableResult(ResultSet rs, String columnName) throws SQLException {
     Timestamp timestamp = rs.getTimestamp(columnName);
+    if (null == timestamp) {
+      return null;
+    }
     return timestamp.getTime();
   }
 
   @Override
   public Long getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
     Timestamp timestamp = rs.getTimestamp(columnIndex);
+    if (null == timestamp) {
+      return null;
+    }
     return timestamp.getTime();
   }
 
   @Override
   public Long getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
     Timestamp timestamp = cs.getTimestamp(columnIndex);
+    if (null == timestamp) {
+      return null;
+    }
     return timestamp.getTime();
   }
 
