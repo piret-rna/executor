@@ -1,7 +1,6 @@
 package net.seninp.executor;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * Cluster job container.
@@ -19,22 +18,22 @@ public class ClusterJob implements Serializable {
 
   private long jobId;
 
-  private LocalDateTime startTime;
+  private Long startTime;
 
-  private LocalDateTime endTime;
+  private Long endTime;
 
   private String command;
 
   private JobCompletionStatus status;
 
-  private LocalDateTime statusTime;
+  private Long statusTime;
 
   public ClusterJob() {
     super();
   }
 
-  public ClusterJob(String username, long jobId, LocalDateTime startTime, LocalDateTime endTime,
-      String command, JobCompletionStatus status, LocalDateTime statusTime) {
+  public ClusterJob(String username, long jobId, Long startTime, Long endTime, String command,
+      JobCompletionStatus status, Long statusTime) {
     super();
     this.username = username;
     this.jobId = jobId;
@@ -51,7 +50,8 @@ public class ClusterJob implements Serializable {
     builder.append("ClusterJob [id=").append(id).append(", username=").append(username)
         .append(", jobId=").append(jobId).append(", startTime=").append(startTime)
         .append(", endTime=").append(endTime).append(", command=\'").append(command)
-        .append("\', status=").append(status).append(", statusTime=").append(statusTime).append("]");
+        .append("\', status=").append(status).append(", statusTime=").append(statusTime)
+        .append("]");
     return builder.toString();
   }
 
@@ -60,11 +60,12 @@ public class ClusterJob implements Serializable {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((command == null) ? 0 : command.hashCode());
-    result = prime * result + ((endTime == null) ? 0 : endTime.hashCode());
+    result = prime * result + (int) (endTime ^ (endTime >>> 32));
+    result = prime * result + (int) (id ^ (id >>> 32));
     result = prime * result + (int) (jobId ^ (jobId >>> 32));
-    result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
+    result = prime * result + (int) (startTime ^ (startTime >>> 32));
     result = prime * result + ((status == null) ? 0 : status.hashCode());
-    result = prime * result + ((statusTime == null) ? 0 : statusTime.hashCode());
+    result = prime * result + (int) (statusTime ^ (statusTime >>> 32));
     result = prime * result + ((username == null) ? 0 : username.hashCode());
     return result;
   }
@@ -84,27 +85,17 @@ public class ClusterJob implements Serializable {
     }
     else if (!command.equals(other.command))
       return false;
-    if (endTime == null) {
-      if (other.endTime != null)
-        return false;
-    }
-    else if (!endTime.equals(other.endTime))
+    if (endTime != other.endTime)
+      return false;
+    if (id != other.id)
       return false;
     if (jobId != other.jobId)
       return false;
-    if (startTime == null) {
-      if (other.startTime != null)
-        return false;
-    }
-    else if (!startTime.equals(other.startTime))
+    if (startTime != other.startTime)
       return false;
     if (status != other.status)
       return false;
-    if (statusTime == null) {
-      if (other.statusTime != null)
-        return false;
-    }
-    else if (!statusTime.equals(other.statusTime))
+    if (statusTime != other.statusTime)
       return false;
     if (username == null) {
       if (other.username != null)
@@ -123,19 +114,19 @@ public class ClusterJob implements Serializable {
     this.jobId = jobId;
   }
 
-  public LocalDateTime getStartTime() {
+  public Long getStartTime() {
     return startTime;
   }
 
-  public void setStartTime(LocalDateTime startTime) {
+  public void setStartTime(Long startTime) {
     this.startTime = startTime;
   }
 
-  public LocalDateTime getEndTime() {
+  public Long getEndTime() {
     return endTime;
   }
 
-  public void setEndTime(LocalDateTime endTime) {
+  public void setEndTime(Long endTime) {
     this.endTime = endTime;
   }
 
@@ -163,11 +154,11 @@ public class ClusterJob implements Serializable {
     this.username = username;
   }
 
-  public LocalDateTime getStatusTime() {
+  public Long getStatusTime() {
     return statusTime;
   }
 
-  public void setStatusTime(LocalDateTime statusTime) {
+  public void setStatusTime(Long statusTime) {
     this.statusTime = statusTime;
   }
 

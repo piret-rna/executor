@@ -10,7 +10,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <restlet.version>2.3.0</restlet.version>
+    <restlet.version>2.3.9</restlet.version>
   </properties>
 
   <name>piret-executor</name>
@@ -216,7 +216,7 @@
               </descriptorRefs>
               <archive>
                 <manifest>
-                  <mainClass>net.seninp.jmotif.sax.SAXCLIConverter</mainClass>
+                  <mainClass>net.seninp.executor.ClusterJobServer</mainClass>
                 </manifest>
               </archive>
               <!-- <filters> <filter>src/assembly/filter.properties</filter> </filters> 
@@ -284,13 +284,13 @@
       <artifactId>hsqldb</artifactId>
       <version>2.3.4</version>
     </dependency>
-    
+
     <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>1.2.17</version>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.17</version>
     </dependency>
-    
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

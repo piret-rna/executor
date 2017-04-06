@@ -36,7 +36,11 @@
     INSERT INTO CLUSTERJOB
     (USERNAME, JOBID, COMMAND, START_TIME, END_TIME, JOB_STATUS, STATUS_TIME)
     VALUES
-    (#{username}, #{jobId}, #{command}, #{startTime}, #{endTime}, #{status}, #{statusTime})
+    (#{username}, #{jobId}, #{command}, 
+    #{startTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler}, 
+    #{endTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
+    #{status}, 
+    #{statusTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler})
   </insert>
 
   <resultMap type="net.seninp.executor.ClusterJob" id="usermap1">
@@ -45,9 +49,12 @@
     <result column="command" property="command"/>
     <result column="status" property="status"/>
     <result column="username" property="username"/>
-    <result column="start_time" property="startTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
-    <result column="end_time" property="endTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
-    <result column="status_time" property="statusTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+    <!--  <result column="start_time" property="startTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/> -->
+    <!--  <result column="end_time" property="endTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/> -->
+    <!--  <result column="status_time" property="statusTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/> -->
+    <result column="start_time" property="startTime" typeHandler="net.seninp.executor.db.TimestampHandler" javaType="Long" jdbcType="TIMESTAMP"/>
+    <result column="end_time" property="startTime" typeHandler="net.seninp.executor.db.TimestampHandler"  javaType="Long" jdbcType="TIMESTAMP"/>
+    <result column="status_time" property="startTime" typeHandler="net.seninp.executor.db.TimestampHandler"  javaType="Long" jdbcType="TIMESTAMP"/>
   </resultMap>
   <select id="getClusterJobById" parameterType="Long"
     resultMap="usermap1">
