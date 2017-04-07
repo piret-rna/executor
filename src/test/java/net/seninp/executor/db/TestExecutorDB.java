@@ -60,6 +60,8 @@ public class TestExecutorDB {
     job2.setStatus(JobCompletionStatus.ENQUEUED);
 
     ExecutorDB.saveClusterJob(job2);
+    
+    System.out.println(job2);
 
   }
 
