@@ -1,14 +1,14 @@
-package net.seninp.executor.jobs;
+package net.seninp.executor.job;
 
 import java.util.concurrent.Future;
-import net.seninp.executor.ClusterJob;
+import net.seninp.executor.resource.ClusterJob;
 
-public class QCExecutor extends AbstractExecutor<ClusterJob> {
+public class SGDJobExecutor extends AbstractExecutor<ClusterJob> {
 
   @Override
   public Future<ClusterJob> execute(ClusterJob job) {
 
-    SGDJob qcJob = new SGDJob();
+    JobScriptFactory qcJob = new JobScriptFactory();
 
     qcJob.setCommand(job.getCommand());
 

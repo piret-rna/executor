@@ -11,8 +11,8 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import net.seninp.executor.ClusterJob;
-import net.seninp.executor.JobCompletionStatus;
+import net.seninp.executor.resource.ClusterJob;
+import net.seninp.executor.resource.JobCompletionStatus;
 
 public class TestExecutorDB {
 

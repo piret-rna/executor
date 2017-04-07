@@ -1,4 +1,4 @@
-package net.seninp.executor;
+package net.seninp.executor.resource;
 
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;

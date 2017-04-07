@@ -1,7 +1,7 @@
-package net.seninp.executor.jobs;
+package net.seninp.executor.job;
 
 import java.util.concurrent.Future;
-import net.seninp.executor.ClusterJob;
+import net.seninp.executor.resource.ClusterJob;
 
 public abstract class AbstractExecutor<V> {
 

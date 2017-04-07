@@ -1,4 +1,4 @@
-package net.seninp.executor.jobs;
+package net.seninp.executor.job;
 
 /**
  * Implements an SGD shell script for job execution
@@ -6,7 +6,7 @@ package net.seninp.executor.jobs;
  * @author psenin
  *
  */
-public class SGDJob {
+public class JobScriptFactory {
 
   private static final String CR = "\n";
 
@@ -65,11 +65,11 @@ public class SGDJob {
     return sb.toString();
   }
 
-  public SGDJob() {
+  public JobScriptFactory() {
     super();
   }
 
-  public SGDJob(String command, String jobName, String jobLog, String userEmail,
+  public JobScriptFactory(String command, String jobName, String jobLog, String userEmail,
       int memoryGigabytes, int cpuCores) {
     super();
     this.command = command;

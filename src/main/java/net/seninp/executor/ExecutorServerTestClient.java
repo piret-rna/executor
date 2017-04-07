@@ -4,9 +4,11 @@ import java.util.Date;
 import java.util.concurrent.Future;
 import org.restlet.data.MediaType;
 import org.restlet.resource.ClientResource;
-import net.seninp.executor.jobs.QCExecutor;
+import net.seninp.executor.job.SGDJobExecutor;
+import net.seninp.executor.resource.ClusterJob;
+import net.seninp.executor.resource.ClusterJobResource;
 
-public class ClusterJobServerTestClient {
+public class ExecutorServerTestClient {
 
   public static void main(String[] args) {
 
@@ -39,7 +41,7 @@ public class ClusterJobServerTestClient {
     qcJob.setCommand(
         "perl /data/edge_v1.0/scripts/illumina_fastq_QC.pl  -p /data/edge_v1.0/edge_ui/EDGE_output/1028/SRA_Download/SRR908279.1.fastq.gz");
 
-    QCExecutor executor = new QCExecutor();
+    SGDJobExecutor executor = new SGDJobExecutor();
     Future<ClusterJob> res = executor.execute(qcJob);
 
   }

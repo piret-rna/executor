@@ -1,4 +1,4 @@
-package net.seninp.executor;
+package net.seninp.executor.resource;
 
 import org.restlet.Application;
 import org.restlet.Restlet;

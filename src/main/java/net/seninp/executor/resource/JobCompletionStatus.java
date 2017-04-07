@@ -1,4 +1,4 @@
-package net.seninp.executor;
+package net.seninp.executor.resource;
 
 public enum JobCompletionStatus {
 

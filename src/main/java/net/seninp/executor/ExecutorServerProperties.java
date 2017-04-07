@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
-public class ServerProperties {
+public class ExecutorServerProperties {
 
   /** The admin email key. */
   public static final String ADMIN_EMAIL_KEY = "executor.admin.email";
@@ -59,7 +59,7 @@ public class ServerProperties {
    * Creates a new ServerProperties instance. Prints an error to the console if problems occur on
    * loading.
    */
-  public ServerProperties() {
+  public ExecutorServerProperties() {
     try {
       initializeProperties();
     }

@@ -2,8 +2,9 @@ package net.seninp.executor;
 
 import org.restlet.Component;
 import org.restlet.data.Protocol;
+import net.seninp.executor.resource.ClusterJobServerApplication;
 
-public class ClusterJobServer {
+public class ExecutorServer {
 
   public static void main(String[] args) throws Exception {
 

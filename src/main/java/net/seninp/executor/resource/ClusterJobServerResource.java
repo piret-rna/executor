@@ -1,4 +1,4 @@
-package net.seninp.executor;
+package net.seninp.executor.resource;
 
 import org.restlet.resource.ServerResource;
 import net.seninp.executor.db.ExecutorDB;
