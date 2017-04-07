@@ -44,6 +44,20 @@
     #{status}, 
     #{statusTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler})
   </insert>
+  
+  <update id="updateClusterJob" parameterType="net.seninp.executor.resource.ClusterJob"
+    flushCache="true" statementType="PREPARED" timeout="20">
+    UPDATE CLUSTERJOB SET
+    USERNAME = #{username}, 
+    RESOURCE_CPU = #{resourceCpu}, 
+    RESOURCE_MEM = #{resourceMem}, 
+    COMMAND = #{command}, 
+    START_TIME = #{startTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler}, 
+    END_TIME = #{endTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler}, 
+    JOB_STATUS = #{status}, 
+    STATUS_TIME = #{statusTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler}
+    WHERE JOBID = #{jobId}
+  </update>
 
   <resultMap type="net.seninp.executor.resource.ClusterJob" id="usermap1">
     <id column="id" property="id"/>
@@ -51,7 +65,8 @@
     <result column="command" property="command"/>
     <result column="resource_cpu" property="resourceCpu"/>
     <result column="resource_mem" property="resourceMem"/>
-    <result column="status" property="status"/>
+    <result column="job_status" property="status" typeHandler="net.seninp.executor.db.JobStatusHandler" 
+                                              javaType="net.seninp.executor.resource.JobCompletionStatus" jdbcType="VARCHAR"/>
     <result column="username" property="username"/>
     <!--  <result column="start_time" property="startTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/> -->
     <!--  <result column="end_time" property="endTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/> -->

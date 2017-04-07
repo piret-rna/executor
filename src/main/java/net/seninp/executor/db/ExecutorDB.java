@@ -142,4 +142,12 @@ public class ExecutorDB {
     return job.getId();
   }
 
+  public static long updateClusterJob(ClusterJob job) {
+    SqlSession session = sqlSessionFactory.openSession();
+    session.update("updateClusterJob", job);
+    session.commit();
+    session.close();
+    return job.getId();
+  }
+
 }
