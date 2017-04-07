@@ -216,7 +216,7 @@
               </descriptorRefs>
               <archive>
                 <manifest>
-                  <mainClass>net.seninp.executor.ClusterJobServer</mainClass>
+                  <mainClass>net.seninp.executor.ExecutorServer</mainClass>
                 </manifest>
               </archive>
               <!-- <filters> <filter>src/assembly/filter.properties</filter> </filters> 
