@@ -18,6 +18,7 @@ public class TestExecutorDB {
 
   private static SqlSessionFactory sqlSessionFactory;
 
+  private static final String TEST_DB_URI = "jdbc:hsqldb:mem:testrnadb";
   private static final long TEST_JOBID = 7;
   private static final String TEST_UNAME = "psenin@lanl.gov";
   private static final int TEST_MEM = 77;
@@ -29,7 +30,7 @@ public class TestExecutorDB {
 
     // set URL with factory builder properties
     Properties properties = new Properties();
-    properties.setProperty("url", "jdbc:hsqldb:mem:testrnadb");
+    properties.setProperty("url", TEST_DB_URI);
 
     // locate the mapper config file and bootstrap the DB
     String resource = "SqlMapConfig.xml";
@@ -37,6 +38,12 @@ public class TestExecutorDB {
     inputStream = Resources.getResourceAsStream(resource);
     sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream, properties);
 
+  }
+
+  @Test
+  public void testDBURI() {
+    ExecutorDB.connect(sqlSessionFactory);
+    assertTrue(TEST_DB_URI.equalsIgnoreCase(ExecutorDB.getDbURI()));
   }
 
   @Test
