@@ -48,22 +48,18 @@ public class TestExecutorDB {
 
   @Test
   public void testDefaultJob() {
-
     ExecutorDB.connect(sqlSessionFactory);
-
     ClusterJob defaultJob = ExecutorDB.getClusterJob(0l);
-
     // session.insert("saveClusterJob", new ClusterJob("psenin", "test cmd", 4, 8));
     assertTrue("psenin".equalsIgnoreCase(defaultJob.getUsername()));
     assertTrue("test cmd".equalsIgnoreCase(defaultJob.getCommand()));
     assertEquals(4, defaultJob.getResourceCpu());
     assertEquals(8, defaultJob.getResourceMem());
-
   }
 
   @Test
   public void testNewJob() {
-    //
+
     ClusterJob job = new ClusterJob(TEST_UNAME, TEST_COMMAND, TEST_CPU, TEST_MEM);
     job.setJobId(TEST_JOBID);
     long tstamp = new Date().getTime();
@@ -73,12 +69,15 @@ public class TestExecutorDB {
     job.setStatus(JobCompletionStatus.ENQUEUED);
     ExecutorDB.saveClusterJob(job);
 
-    //
     ClusterJob tJob = ExecutorDB.getClusterJob(TEST_JOBID);
     assertTrue(TEST_UNAME.equalsIgnoreCase(tJob.getUsername()));
     assertTrue(TEST_COMMAND.equalsIgnoreCase(tJob.getCommand()));
     assertEquals(TEST_CPU, tJob.getResourceCpu());
     assertEquals(TEST_MEM, tJob.getResourceMem());
+    assertEquals(tstamp, tJob.getStartTime().longValue());
+    assertEquals(tstamp + 1, tJob.getEndTime().longValue());
+    assertEquals(tstamp + 2, tJob.getStatusTime().longValue());
+    assertEquals(JobCompletionStatus.ENQUEUED, job.getStatus());
 
     System.out.println(job);
   }

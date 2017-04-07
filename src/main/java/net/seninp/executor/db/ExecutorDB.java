@@ -129,7 +129,7 @@ public class ExecutorDB {
   public static ClusterJob getClusterJob(Long jobId) {
     SqlSession session = sqlSessionFactory.openSession();
     ClusterJob job = session.selectOne("getClusterJobById", jobId);
-    System.out.println(job);
+    System.out.println(" --> " + job);
     session.close();
     return job;
   }

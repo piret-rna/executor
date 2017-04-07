@@ -57,8 +57,8 @@
     <!--  <result column="end_time" property="endTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/> -->
     <!--  <result column="status_time" property="statusTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/> -->
     <result column="start_time" property="startTime" typeHandler="net.seninp.executor.db.TimestampHandler" javaType="Long" jdbcType="TIMESTAMP"/>
-    <result column="end_time" property="startTime" typeHandler="net.seninp.executor.db.TimestampHandler"  javaType="Long" jdbcType="TIMESTAMP"/>
-    <result column="status_time" property="startTime" typeHandler="net.seninp.executor.db.TimestampHandler"  javaType="Long" jdbcType="TIMESTAMP"/>
+    <result column="end_time" property="endTime" typeHandler="net.seninp.executor.db.TimestampHandler"  javaType="Long" jdbcType="TIMESTAMP"/>
+    <result column="status_time" property="statusTime" typeHandler="net.seninp.executor.db.TimestampHandler"  javaType="Long" jdbcType="TIMESTAMP"/>
   </resultMap>
   <select id="getClusterJobById" parameterType="Long"
     resultMap="usermap1">

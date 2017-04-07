@@ -1,4 +1,4 @@
-package net.seninp.executor;
+package net.seninp.executor.client;
 
 import java.util.Date;
 import java.util.concurrent.Future;
