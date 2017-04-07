@@ -12,12 +12,14 @@ public class SGDService {
     Runtime r = Runtime.getRuntime();
     Process p;
     try {
+      System.out.println(" --> " + jobStatusQuery);
       p = r.exec(jobStatusQuery);
       p.waitFor();
       BufferedReader b = new BufferedReader(new InputStreamReader(p.getInputStream()));
       StringBuffer response = new StringBuffer("");
       String line = "";
       while ((line = b.readLine()) != null) {
+        System.out.println(" --> " + line);
         response.append(line);
       }
       b.close();
