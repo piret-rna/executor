@@ -18,6 +18,7 @@ public class TestExecutorDB {
 
   private static SqlSessionFactory sqlSessionFactory;
 
+  private static final long TEST_JOBID = 7;
   private static final String TEST_UNAME = "psenin@lanl.gov";
   private static final int TEST_MEM = 77;
   private static final int TEST_CPU = 88;
@@ -39,7 +40,7 @@ public class TestExecutorDB {
   }
 
   @Test
-  public void testUserRNADb() {
+  public void testDefaultJob() {
 
     ExecutorDB.connect(sqlSessionFactory);
 
@@ -51,18 +52,28 @@ public class TestExecutorDB {
     assertEquals(4, defaultJob.getResourceCpu());
     assertEquals(8, defaultJob.getResourceMem());
 
+  }
+
+  @Test
+  public void testNewJob() {
     //
-    ClusterJob job2 = new ClusterJob(TEST_UNAME, TEST_COMMAND, TEST_CPU, TEST_MEM);
+    ClusterJob job = new ClusterJob(TEST_UNAME, TEST_COMMAND, TEST_CPU, TEST_MEM);
+    job.setJobId(TEST_JOBID);
     long tstamp = new Date().getTime();
-    job2.setStartTime(tstamp);
-    job2.setEndTime(tstamp + 1);
-    job2.setStatusTime(tstamp + 2);
-    job2.setStatus(JobCompletionStatus.ENQUEUED);
+    job.setStartTime(tstamp);
+    job.setEndTime(tstamp + 1);
+    job.setStatusTime(tstamp + 2);
+    job.setStatus(JobCompletionStatus.ENQUEUED);
+    ExecutorDB.saveClusterJob(job);
 
-    ExecutorDB.saveClusterJob(job2);
-    
-    System.out.println(job2);
+    //
+    ClusterJob tJob = ExecutorDB.getClusterJob(TEST_JOBID);
+    assertTrue(TEST_UNAME.equalsIgnoreCase(tJob.getUsername()));
+    assertTrue(TEST_COMMAND.equalsIgnoreCase(tJob.getCommand()));
+    assertEquals(TEST_CPU, tJob.getResourceCpu());
+    assertEquals(TEST_MEM, tJob.getResourceMem());
 
+    System.out.println(job);
   }
 
 }
