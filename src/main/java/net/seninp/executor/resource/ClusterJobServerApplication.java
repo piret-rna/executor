@@ -19,25 +19,25 @@ public class ClusterJobServerApplication extends Application {
 
     Router router = new Router(getContext());
 
-    router.attach("/json", ClusterJobServerResource.class);
+    router.attach("/json/{jobid}", ClusterJobServerResource.class);
 
     // Create the account handler
     Restlet clusterJob = new Restlet() {
       @Override
       public void handle(Request request, Response response) {
 
-        String jobId = String.valueOf(request.getAttributes().get("job"));
+        String jobId = String.valueOf(request.getAttributes().get("jobid"));
 
         String jobStatus = SGDService.getJobStatus(jobId);
 
         //
-        String message = "Job status of job \"" + request.getAttributes().get("job") + "\": "
+        String message = "Job status of job \"" + request.getAttributes().get("jobid") + "\": "
             + jobStatus;
         response.setEntity(message, MediaType.TEXT_PLAIN);
       }
     };
 
-    router.attach("/jobstatus/{job}", clusterJob);
+    router.attach("/jobstatus/{jobid}", clusterJob);
 
     return router;
   }

@@ -13,8 +13,16 @@ public class JSONTestClient {
 
   public static void main(String[] args) {
 
+    if (args.length < 1) {
+      System.err.println("You need to provide a job Id for this code to function.");
+      System.exit(10);
+    }
+
+    String jobId = args[0];
+
+    System.out.println("Querying JSON for the job " + jobId);
     // Initialize the resource proxy.
-    ClientResource cr = new ClientResource("http://localhost:8181/executor/json");
+    ClientResource cr = new ClientResource("http://localhost:8181/executor/json/" + args[0]);
 
     // Workaround for GAE servers to prevent chunk encoding
     cr.setRequestEntityBuffering(true);

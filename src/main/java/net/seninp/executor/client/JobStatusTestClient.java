@@ -10,6 +10,11 @@ public class JobStatusTestClient {
 
   public static void main(String[] args) {
 
+    if (args.length < 1) {
+      System.err.println("You need to provide a job Id for this code to function.");
+      System.exit(10);
+    }
+
     String jobId = args[0];
 
     System.out.println("Querying status of the job with id " + jobId);
