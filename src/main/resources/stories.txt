@@ -1,0 +1,14 @@
+#1 running a new job
+  [Client side]
+	- create ClusterJob object
+	- populate the command line
+	- populate CPU requirements
+	- populate memory requirements in GB
+	- POST the job to executor server
+  [Server side]
+  	- validate the job?
+  	- create a database record
+  	- create the .sh script (name?)
+  	- enqueue the job with scheduler
+  	- update the status in the DB
+  	
