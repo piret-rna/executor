@@ -3,35 +3,45 @@ package net.seninp.executor.job;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import net.seninp.executor.util.StackTrace;
 
 public class SGDService {
 
   public synchronized static String getJobStatus(String jobId) {
-    String jobStatusQuery = "qstat -j " + jobId;
-    Runtime r = Runtime.getRuntime();
+    String command[] = { "qstat", "-q", jobId };
     Process p;
     try {
-      System.out.println(" --> " + jobStatusQuery);
-      p = r.exec(jobStatusQuery);
+      System.out.println(" --> " + Arrays.toString(command));
+      p = new ProcessBuilder().command(command).start();
       p.waitFor();
-      BufferedReader b = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+      BufferedReader stdOut = new BufferedReader(new InputStreamReader(p.getErrorStream()));
       StringBuffer response = new StringBuffer("");
       String line = "";
-      while ((line = b.readLine()) != null) {
-        System.out.println(" --> " + line);
+      while ((line = stdOut.readLine()) != null) {
         response.append(line);
       }
-      b.close();
+      stdOut.close();
+
+      System.out.println(" -!-> " + response.length());
+      if (0 == response.length()) {
+        stdOut = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+        while ((line = stdOut.readLine()) != null) {
+          response.append(line);
+        }
+        stdOut.close();
+      }
+
       return response.toString();
     }
     catch (IOException e) {
-      System.err.println("Unable to query job status with command \"" + jobStatusQuery
+      System.err.println("Unable to query job status with command \"" + Arrays.toString(command)
           + "\"... Exception: " + StackTrace.toString(e));
       e.printStackTrace();
     }
     catch (InterruptedException e) {
-      System.err.println("The executed command \"" + jobStatusQuery
+      System.err.println("The executed command \"" + Arrays.toString(command)
           + "\" doesn't return... Exception: " + StackTrace.toString(e));
     }
 
