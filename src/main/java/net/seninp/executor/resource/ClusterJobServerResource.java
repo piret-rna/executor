@@ -1,6 +1,9 @@
 package net.seninp.executor.resource;
 
 import org.restlet.resource.ServerResource;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import net.seninp.executor.db.ExecutorDB;
 
 /**
@@ -14,7 +17,16 @@ public class ClusterJobServerResource extends ServerResource implements ClusterJ
 
   @Override
   public void run(ClusterJob job) {
-    // TODO Auto-generated method stub
+
+    try {
+      com.fasterxml.jackson.databind.ObjectMapper mapper = new ObjectMapper();
+      mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+      String jsonString = mapper.writeValueAsString(job);
+      System.out.println("Recieved the following JSON for the new job execution:\n" + jsonString);
+    }
+    catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
 
   }
 

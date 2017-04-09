@@ -20,6 +20,8 @@ public class ClusterJobServerApplication extends Application {
     Router router = new Router(getContext());
 
     router.attach("/json/{jobid}", ClusterJobServerResource.class);
+    
+    router.attach("/newjob", ClusterJobServerResource.class);
 
     // Create the account handler
     Restlet clusterJob = new Restlet() {
