@@ -1,10 +1,13 @@
 package net.seninp.executor.client;
 
-import java.util.Date;
 import org.restlet.data.MediaType;
 import org.restlet.resource.ClientResource;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import net.seninp.executor.resource.ClusterJob;
 import net.seninp.executor.resource.ClusterJobResource;
+import net.seninp.executor.util.StackTrace;
 
 public class JSONTestClient {
 
@@ -23,10 +26,16 @@ public class JSONTestClient {
     // Get the remote job as JSON
     ClusterJob job = resource.retrieve();
     if (job != null) {
-      System.out.println("    jobId: " + job.getJobId());
-      System.out.println("startTime: " + new Date(job.getStartTime()));
-      System.out.println("      cmd: " + job.getCommand());
-      System.out.println("   status: " + job.getStatus());
+      try {
+        com.fasterxml.jackson.databind.ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+        String jsonString = mapper.writeValueAsString(job);
+        System.out.println("Recieved the following JSON:\n" + jsonString);
+      }
+      catch (JsonProcessingException e) {
+        System.err.println("Exception thrown while formatting JSON: " + StackTrace.toString(e));
+      }
+
     }
 
   }

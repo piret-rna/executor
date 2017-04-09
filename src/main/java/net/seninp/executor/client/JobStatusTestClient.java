@@ -4,6 +4,7 @@ import java.io.IOException;
 import org.restlet.data.MediaType;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
+import net.seninp.executor.util.StackTrace;
 
 public class JobStatusTestClient {
 
@@ -12,7 +13,7 @@ public class JobStatusTestClient {
     String jobId = args[0];
 
     System.out.println("Querying status of the job with id " + jobId);
-    
+
     // Initialize the resource proxy.
     ClientResource cr = new ClientResource("http://localhost:8181/executor/jobstatus/" + jobId);
 
@@ -25,11 +26,16 @@ public class JobStatusTestClient {
     String text;
     try {
       text = responseEntity.getText();
-      System.out.println(text);
+
+      if (text.toLowerCase().contains("jobs do not exist or permissions are not sufficient")) {
+        System.out.println("Unknown job (" + jobId + ") queried or no permission ...");
+      }
+      else {
+        System.out.println("Unknown response recieved: " + text);
+      }
     }
     catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      System.err.println("Exception thrown: " + StackTrace.toString(e));
     }
 
   }

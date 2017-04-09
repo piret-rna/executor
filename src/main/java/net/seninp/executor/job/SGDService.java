@@ -12,13 +12,12 @@ public class SGDService {
     String command[] = { "qstat", "-j", jobId };
     Process p;
     try {
-      System.out.println(" ... > process builder args: " + Arrays.toString(command));
       
       p = new ProcessBuilder().command(command).start();
       
       p.waitFor();
 
-      System.out.println(" ... > querying stdOut... ");
+      // System.out.println(" ... > querying stdOut... ");
       BufferedReader stdOut = new BufferedReader(new InputStreamReader(p.getInputStream()));
       StringBuffer response = new StringBuffer("");
       String line = "";
@@ -27,7 +26,7 @@ public class SGDService {
       }
       stdOut.close();
 
-      System.out.println(" ... > querying stdErr... ");
+      // System.out.println(" ... > querying stdErr... ");
       if (0 == response.length()) {
         stdOut = new BufferedReader(new InputStreamReader(p.getErrorStream()));
         while ((line = stdOut.readLine()) != null) {
