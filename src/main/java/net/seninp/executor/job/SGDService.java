@@ -9,14 +9,17 @@ import net.seninp.executor.util.StackTrace;
 public class SGDService {
 
   public synchronized static String getJobStatus(String jobId) {
-    String command[] = { "qstat", "-q", jobId };
+    String command[] = { "qstat", "-j", jobId };
     Process p;
     try {
-      System.out.println(" --> " + Arrays.toString(command));
+      System.out.println(" ... > process builder args: " + Arrays.toString(command));
+      
       p = new ProcessBuilder().command(command).start();
+      
       p.waitFor();
 
-      BufferedReader stdOut = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+      System.out.println(" ... > querying stdOut... ");
+      BufferedReader stdOut = new BufferedReader(new InputStreamReader(p.getInputStream()));
       StringBuffer response = new StringBuffer("");
       String line = "";
       while ((line = stdOut.readLine()) != null) {
@@ -24,7 +27,7 @@ public class SGDService {
       }
       stdOut.close();
 
-      System.out.println(" -!-> " + response.length());
+      System.out.println(" ... > querying stdErr... ");
       if (0 == response.length()) {
         stdOut = new BufferedReader(new InputStreamReader(p.getErrorStream()));
         while ((line = stdOut.readLine()) != null) {

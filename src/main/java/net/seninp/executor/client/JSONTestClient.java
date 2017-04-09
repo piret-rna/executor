@@ -6,7 +6,7 @@ import org.restlet.resource.ClientResource;
 import net.seninp.executor.resource.ClusterJob;
 import net.seninp.executor.resource.ClusterJobResource;
 
-public class ExecutorServerTestClient {
+public class JSONTestClient {
 
   public static void main(String[] args) {
 

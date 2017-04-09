@@ -5,13 +5,14 @@ import org.restlet.data.MediaType;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 
-public class JobStatus {
+public class JobStatusTestClient {
 
   public static void main(String[] args) {
 
     String jobId = args[0];
 
     System.out.println("Querying status of the job with id " + jobId);
+    
     // Initialize the resource proxy.
     ClientResource cr = new ClientResource("http://localhost:8181/executor/jobstatus/" + jobId);
 
