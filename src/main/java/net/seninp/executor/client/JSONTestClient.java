@@ -13,7 +13,7 @@ public class JSONTestClient {
 
   public static void main(String[] args) {
 
-    if (args.length < 1) {
+    if (args.length < 1 || args.length != 1) {
       System.err.println("You need to provide a job Id for this code to function.");
       System.exit(10);
     }

@@ -13,19 +13,24 @@ public class ClusterJobServerResource extends ServerResource implements ClusterJ
   }
 
   @Override
+  public void run(ClusterJob job) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
   public ClusterJob retrieve() {
     // Form form = getReference().getQueryAsForm();
     // String jobId = form.getFirstValue("jobid");
     String jobId = getReference().getLastSegment();
-    System.out.println("retrieving: " + jobId);
     ClusterJob job = ExecutorDB.getClusterJob(Long.valueOf(jobId));
     return job;
   }
 
   @Override
-  public void store(ClusterJob job) {
-    System.out.println("posting: " + job);
-    ExecutorDB.saveClusterJob(job);
+  public void update(ClusterJob job) {
+    System.out.println("updating job with ID " + job.getJobId());
+    ExecutorDB.updateClusterJob(job);
   }
 
   @Override
