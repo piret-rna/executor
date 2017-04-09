@@ -22,8 +22,10 @@ public class RunJobTestClient {
         + memGB + "GB of memory");
 
     ClusterJob newJob = new ClusterJob();
+    newJob.setUsername("psenin");
     newJob.setCommand(commandLine);
     newJob.setResourceCpu(cpuNum);
+    newJob.setResourceMem(memGB);
 
     // Initialize the resource proxy.
     ClientResource cr = new ClientResource("http://localhost:8181/executor/newjob");
