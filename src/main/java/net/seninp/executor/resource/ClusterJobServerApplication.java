@@ -6,24 +6,41 @@ import org.restlet.Response;
 import org.restlet.Restlet;
 import org.restlet.data.MediaType;
 import org.restlet.routing.Router;
-import net.seninp.executor.db.ExecutorDB;
 import net.seninp.executor.job.SGDService;
 
+/**
+ * The main Executor app.
+ * 
+ * @author psenin
+ *
+ */
 public class ClusterJobServerApplication extends Application {
 
   @Override
   public Restlet createInboundRoot() {
 
-    // init the DB connection
-    ExecutorDB.connect("");
-
     Router router = new Router(getContext());
 
+    //
+    // [1.0]
+    // /json{jobId} reports a status of the job from database except the RUNNING state
+    // -- in this case it checks with the cluster
+    //
     router.attach("/json/{jobid}", ClusterJobServerResource.class);
-    
+
+    //
+    // [2.0]
+    // the /newjob URI expects JSON-formatted job to be POSTED for running with
+    // username, command line, and resources (CPU and MEM) specified
+    //
+    //
     router.attach("/newjob", ClusterJobServerResource.class);
 
-    // Create the account handler
+    //
+    // [3.0]
+    // querying QSUB itself
+    //
+    // Create the handler
     Restlet clusterJob = new Restlet() {
       @Override
       public void handle(Request request, Response response) {
@@ -38,9 +55,11 @@ public class ClusterJobServerApplication extends Application {
         response.setEntity(message, MediaType.TEXT_PLAIN);
       }
     };
-
     router.attach("/jobstatus/{jobid}", clusterJob);
 
+    //
+    // voila!
+    //
     return router;
   }
 

@@ -37,14 +37,14 @@ public class ClusterJobServerResource extends ServerResource implements ClusterJ
 
     //
     // execute the job
-    JobScriptFactory qcJob = new JobScriptFactory();
-    qcJob.setCommand(job.getCommand());
-    qcJob.setJobName("testQCJob");
-    qcJob.setJobLog("testQCJob.log");
-    qcJob.setUserEmail("psenin@lanl.gov");
-    qcJob.setCpuCores(job.getResourceCpu());
-    qcJob.setMemoryGigabytes(job.getResourceMem());
-    System.out.println("the job script:\n" + qcJob.getScript());
+    JobScriptFactory newJob = new JobScriptFactory();
+    newJob.setCommand(job.getCommand());
+    newJob.setJobName("testQCJob");
+    newJob.setJobLog("testQCJob.log");
+    newJob.setUserEmail("psenin@lanl.gov");
+    newJob.setCpuCores(job.getResourceCpu());
+    newJob.setMemoryGigabytes(job.getResourceMem());
+    System.out.println("the job script:\n" + newJob.getScript());
 
   }
 

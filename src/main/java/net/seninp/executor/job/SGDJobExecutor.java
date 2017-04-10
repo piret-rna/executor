@@ -1,27 +1,19 @@
 package net.seninp.executor.job;
 
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.concurrent.Future;
 import net.seninp.executor.resource.ClusterJob;
 
 public class SGDJobExecutor extends AbstractExecutor<ClusterJob> {
 
+  Queue<ClusterJob> toBeExecuted = new LinkedList<ClusterJob>();
+
   @Override
   public Future<ClusterJob> execute(ClusterJob job) {
 
-    JobScriptFactory qcJob = new JobScriptFactory();
-
-    qcJob.setCommand(job.getCommand());
-
-    qcJob.setJobName("testQCJob");
-    qcJob.setJobLog("testQCJob.log");
-
-    qcJob.setUserEmail("psenin@lanl.gov");
-
-    qcJob.setCpuCores(4);
-    qcJob.setMemoryGigabytes(8);
-
-    System.out.println(qcJob);
-
+    this.toBeExecuted.add(job);
+    
     return null;
   }
 

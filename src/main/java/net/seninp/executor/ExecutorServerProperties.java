@@ -7,6 +7,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
+/**
+ * So far unused class...
+ * 
+ * @author psenin
+ *
+ */
 public class ExecutorServerProperties {
 
   /** The admin email key. */

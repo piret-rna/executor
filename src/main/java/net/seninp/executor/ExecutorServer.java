@@ -4,6 +4,12 @@ import org.restlet.Component;
 import org.restlet.data.Protocol;
 import net.seninp.executor.resource.ClusterJobServerApplication;
 
+/**
+ * Main server's executable.
+ * 
+ * @author psenin
+ *
+ */
 public class ExecutorServer {
 
   public static void main(String[] args) throws Exception {
