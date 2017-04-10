@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import net.seninp.executor.db.ExecutorDB;
-import net.seninp.executor.job.JobScriptFactory;
 
 /**
  * The server side implementation of the Restlet resource.
@@ -35,16 +34,8 @@ public class ClusterJobServerResource extends ServerResource implements ClusterJ
     // save the job in the DB
     ExecutorDB.saveClusterJob(job);
 
-    //
-    // execute the job
-    JobScriptFactory newJob = new JobScriptFactory();
-    newJob.setCommand(job.getCommand());
-    newJob.setJobName("testQCJob");
-    newJob.setJobLog("testQCJob.log");
-    newJob.setUserEmail("psenin@lanl.gov");
-    newJob.setCpuCores(job.getResourceCpu());
-    newJob.setMemoryGigabytes(job.getResourceMem());
-    System.out.println("the job script:\n" + newJob.getScript());
+//    executorInstance = SGDJobExecutor.getInstance();
+//    SGDJobExecutor.execute(job);
 
   }
 
