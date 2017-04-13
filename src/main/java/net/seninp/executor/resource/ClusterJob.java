@@ -174,4 +174,16 @@ public class ClusterJob implements Serializable {
     this.resourceMem = resourceMem;
   }
 
+  public boolean validate() {
+    // check that username is specified
+    if (null == this.username || this.username.isEmpty()) {
+      return false;
+    }
+    // check that command is specified
+    if (null == this.command || this.command.isEmpty()) {
+      return false;
+    }
+    return true;
+  }
+
 }

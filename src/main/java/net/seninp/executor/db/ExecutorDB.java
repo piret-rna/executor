@@ -7,6 +7,7 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.log4j.Logger;
 import net.seninp.executor.resource.ClusterJob;
 import net.seninp.executor.util.StackTrace;
 
@@ -18,6 +19,8 @@ import net.seninp.executor.util.StackTrace;
  */
 public class ExecutorDB {
 
+  final static Logger logger = Logger.getLogger(ExecutorDB.class);
+
   private static SqlSessionFactory sqlSessionFactory;
 
   /**
@@ -26,6 +29,15 @@ public class ExecutorDB {
   private ExecutorDB() {
     super();
     assert true;
+  }
+
+  /**
+   * A wrapper to the default constructor.
+   */
+  public static void connect() {
+    logger.info("no URI provided, starting the DB with default settings");
+    String nullURI = null;
+    connect(nullURI);
   }
 
   /**
@@ -51,6 +63,8 @@ public class ExecutorDB {
       dbHome.append(";shutdown=true");
 
       dbURI = dbHome.toString();
+      logger.info(
+          "no URI provided, starting the DB with default settings: \'" + dbHome.toString() + "\'");
     }
 
     properties.setProperty("url", dbURI);
@@ -64,9 +78,10 @@ public class ExecutorDB {
       sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream, properties);
     }
     catch (IOException e) {
-      System.err.println(StackTrace.toString(e));
+      logger.error("exception why creating the SqlSessionFactory: " + StackTrace.toString(e));
     }
 
+    logger.info("the SqlSessionFactory instantiated, recreating the tables");
     recreateTables();
 
   }
@@ -79,7 +94,10 @@ public class ExecutorDB {
    * 
    */
   public static void connect(SqlSessionFactory sqlSessionFactory) {
+    logger.info("connecting using a custom SqlSessionFactory "
+        + sqlSessionFactory.getConfiguration().getVariables().get("url"));
     ExecutorDB.sqlSessionFactory = sqlSessionFactory;
+    logger.info("recreating the tables");
     recreateTables();
   }
 
@@ -102,6 +120,11 @@ public class ExecutorDB {
    * @return
    */
   public static ClusterJob getClusterJob(Long jobId) {
+    logger.info("getting a job with an id " + String.valueOf(jobId));
+    if (null == jobId || jobId < 0) {
+      logger.error("a suspicious ID given: " + String.valueOf(jobId) + ", skipping...");
+      return null;
+    }
     SqlSession session = sqlSessionFactory.openSession();
     ClusterJob job = session.selectOne("getClusterJobById", jobId);
     session.close();
@@ -115,6 +138,8 @@ public class ExecutorDB {
    * @return
    */
   public static long saveClusterJob(ClusterJob job) {
+    logger.info(
+        "saving a cluster job instance with Id " + job.getJobId() + "{" + job.toString() + "}");
     SqlSession session = sqlSessionFactory.openSession();
     session.insert("saveClusterJob", job);
     session.commit();
@@ -129,6 +154,8 @@ public class ExecutorDB {
    * @return
    */
   public static long updateClusterJob(ClusterJob job) {
+    logger.info(
+        "updating the cluster job instance with Id " + job.getJobId() + "{" + job.toString() + "}");
     SqlSession session = sqlSessionFactory.openSession();
     session.update("updateClusterJob", job);
     session.commit();

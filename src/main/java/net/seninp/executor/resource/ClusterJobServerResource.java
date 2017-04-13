@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import net.seninp.executor.db.ExecutorDB;
+import net.seninp.executor.service.SGDService;
 
 /**
  * The server side implementation of the Restlet resource.
@@ -31,20 +32,33 @@ public class ClusterJobServerResource extends ServerResource implements ClusterJ
     }
 
     //
-    // save the job in the DB
-    ExecutorDB.saveClusterJob(job);
+    // if a null passed -- then do nothing
+    if (null == job) {
+      return;
+    }
 
-//    executorInstance = SGDJobExecutor.getInstance();
-//    SGDJobExecutor.execute(job);
+    if (job.validate()) {
+      //
+      // save the job in the DB
+      ExecutorDB.saveClusterJob(job);
+
+      SGDService executorInstance = SGDService.getInstance();
+      executorInstance.execute(job);
+    }
 
   }
 
+  // THIS IS THE GET REQUEST
   @Override
   public ClusterJob retrieve() {
     // Form form = getReference().getQueryAsForm();
     // String jobId = form.getFirstValue("jobid");
     String jobId = getReference().getLastSegment();
+    System.out.println(" ** -- > " + jobId);
     ClusterJob job = ExecutorDB.getClusterJob(Long.valueOf(jobId));
+    //
+    // TODO: if the job is NULL? i.e. doesnt exist, what shall we return?
+    //
     return job;
   }
 
