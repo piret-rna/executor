@@ -6,7 +6,7 @@ import org.restlet.Response;
 import org.restlet.Restlet;
 import org.restlet.data.MediaType;
 import org.restlet.routing.Router;
-import net.seninp.executor.job.SGDService;
+import net.seninp.executor.service.SGDService;
 
 /**
  * The main Executor app.

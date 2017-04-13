@@ -1,4 +1,4 @@
-package net.seninp.executor.job;
+package net.seninp.executor.service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import net.seninp.executor.job.AbstractExecutor;
+import net.seninp.executor.job.SGDClusterJob;
 import net.seninp.executor.resource.ClusterJob;
 import net.seninp.executor.resource.JobCompletionStatus;
 import net.seninp.executor.util.StackTrace;
