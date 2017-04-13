@@ -97,6 +97,54 @@ public class SGDClusterJob implements Callable<JobCompletionStatus> {
     return sb.toString();
   }
 
+  public String getJobName() {
+    return jobName;
+  }
+
+  public void setJobName(String jobName) {
+    this.jobName = jobName;
+  }
+
+  public String getJobLog() {
+    return jobLog;
+  }
+
+  public void setJobLog(String jobLog) {
+    this.jobLog = jobLog;
+  }
+
+  public String getUserEmail() {
+    return userEmail;
+  }
+
+  public void setUserEmail(String userEmail) {
+    this.userEmail = userEmail;
+  }
+
+  public int getMemoryGigabytes() {
+    return memoryGigabytes;
+  }
+
+  public void setMemoryGigabytes(int memoryGigabytes) {
+    this.memoryGigabytes = memoryGigabytes;
+  }
+
+  public int getCpuCores() {
+    return cpuCores;
+  }
+
+  public void setCpuCores(int cpuCores) {
+    this.cpuCores = cpuCores;
+  }
+
+  public String getCommand() {
+    return command;
+  }
+
+  public void setCommand(String command) {
+    this.command = command;
+  }
+
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder();

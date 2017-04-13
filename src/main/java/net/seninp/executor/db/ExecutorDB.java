@@ -29,8 +29,8 @@ public class ExecutorDB {
   }
 
   /**
-   * Attempts to establish the database connection. Also creates a database if not exists and
-   * populates the test user.
+   * Attempts to establish the database connection, will re-create the tables and populate the test
+   * user if not exists.
    * 
    * @param dbURI the non-default DB URI, specify an empty string for default.
    */
@@ -72,7 +72,8 @@ public class ExecutorDB {
   }
 
   /**
-   * In the case of building an SqlSession manually use this constructor.
+   * In the case of building an SqlSession manually use this constructor, will re-create the tables
+   * and populate the test user if not exists.
    * 
    * @param sqlSessionFactory the SQL Session factory to use for db connection.
    * 
@@ -80,6 +81,59 @@ public class ExecutorDB {
   public static void connect(SqlSessionFactory sqlSessionFactory) {
     ExecutorDB.sqlSessionFactory = sqlSessionFactory;
     recreateTables();
+  }
+
+  /**
+   * Reports the actual database URI.
+   * 
+   * @return the database URI.
+   */
+  public static String getDbURI() {
+    SqlSession session = sqlSessionFactory.openSession();
+    String dbURL = (String) session.getConfiguration().getVariables().get("url");
+    session.close();
+    return dbURL;
+  }
+
+  /**
+   * Get the record by the job ID.
+   * 
+   * @param jobId
+   * @return
+   */
+  public static ClusterJob getClusterJob(Long jobId) {
+    SqlSession session = sqlSessionFactory.openSession();
+    ClusterJob job = session.selectOne("getClusterJobById", jobId);
+    session.close();
+    return job;
+  }
+
+  /**
+   * Saves the cluster job record.
+   * 
+   * @param job
+   * @return
+   */
+  public static long saveClusterJob(ClusterJob job) {
+    SqlSession session = sqlSessionFactory.openSession();
+    session.insert("saveClusterJob", job);
+    session.commit();
+    session.close();
+    return job.getId();
+  }
+
+  /**
+   * Updates the cluster job record.
+   * 
+   * @param job
+   * @return
+   */
+  public static long updateClusterJob(ClusterJob job) {
+    SqlSession session = sqlSessionFactory.openSession();
+    session.update("updateClusterJob", job);
+    session.commit();
+    session.close();
+    return job.getId();
   }
 
   /**
@@ -112,41 +166,6 @@ public class ExecutorDB {
       session.close();
     }
 
-  }
-
-  /**
-   * Reports the actual database URI.
-   * 
-   * @return the database URI.
-   */
-  public static String getDbURI() {
-    SqlSession session = sqlSessionFactory.openSession();
-    String dbURL = (String) session.getConfiguration().getVariables().get("url");
-    session.close();
-    return dbURL;
-  }
-
-  public static ClusterJob getClusterJob(Long jobId) {
-    SqlSession session = sqlSessionFactory.openSession();
-    ClusterJob job = session.selectOne("getClusterJobById", jobId);
-    session.close();
-    return job;
-  }
-
-  public static long saveClusterJob(ClusterJob job) {
-    SqlSession session = sqlSessionFactory.openSession();
-    session.insert("saveClusterJob", job);
-    session.commit();
-    session.close();
-    return job.getId();
-  }
-
-  public static long updateClusterJob(ClusterJob job) {
-    SqlSession session = sqlSessionFactory.openSession();
-    session.update("updateClusterJob", job);
-    session.commit();
-    session.close();
-    return job.getId();
   }
 
 }

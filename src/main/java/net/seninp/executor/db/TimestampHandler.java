@@ -8,6 +8,12 @@ import java.sql.Timestamp;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
+/**
+ * handles the LONG-to-DATETIME conversion.
+ * 
+ * @author psenin
+ *
+ */
 public class TimestampHandler extends BaseTypeHandler<Long> {
 
   @Override

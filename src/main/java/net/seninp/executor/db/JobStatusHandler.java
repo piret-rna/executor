@@ -8,6 +8,12 @@ import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import net.seninp.executor.resource.JobCompletionStatus;
 
+/**
+ * This handles the STRING - to - ENUM conversion for the job ststus.
+ * 
+ * @author psenin
+ *
+ */
 public class JobStatusHandler extends BaseTypeHandler<JobCompletionStatus> {
 
   @Override
