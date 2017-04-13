@@ -3,7 +3,7 @@ package net.seninp.executor.resource;
 import java.io.Serializable;
 
 /**
- * Cluster job container.
+ * Cluster job data structure.
  * 
  * @author psenin
  *
