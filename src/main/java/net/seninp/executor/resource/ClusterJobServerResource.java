@@ -1,16 +1,21 @@
 package net.seninp.executor.resource;
 
+import org.apache.log4j.Logger;
 import org.restlet.resource.ServerResource;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import net.seninp.executor.ExecutorServer;
 import net.seninp.executor.db.ExecutorDB;
 import net.seninp.executor.service.SGDService;
+import net.seninp.executor.util.ErrorMessage;
 
 /**
  * The server side implementation of the Restlet resource.
  */
 public class ClusterJobServerResource extends ServerResource implements ClusterJobResource {
+
+  final static Logger logger = Logger.getLogger(ClusterJobServerResource.class);
 
   public ClusterJobServerResource() {
     super();
@@ -48,28 +53,28 @@ public class ClusterJobServerResource extends ServerResource implements ClusterJ
 
   }
 
-  // THIS IS THE GET REQUEST
   @Override
-  public ClusterJob retrieve() {
-    // Form form = getReference().getQueryAsForm();
-    // String jobId = form.getFirstValue("jobid");
+  public Object retrieve() {
+
     String jobId = getReference().getLastSegment();
+    logger.info("recieved request for retrieving info for a job with id " + jobId);
+
+    if (!(jobId.matches("[0-9]+"))) {
+      logger.error("invalid job id provided: " + jobId);
+      return new ErrorMessage("0001", "Invalid job ID", "The job id shall contain only digits");
+    }
+
+    // TODO: shall we update the job status right here???
     ClusterJob job = ExecutorDB.getClusterJob(Long.valueOf(jobId));
-    //
-    // TODO: if the job is NULL? i.e. doesnt exist, what shall we return?
-    //
+
     return job;
   }
 
   @Override
-  public void update(ClusterJob job) {
-    System.out.println("updating job with ID " + job.getJobId());
-    ExecutorDB.updateClusterJob(job);
-  }
-
-  @Override
-  public void remove(Long jobId) {
-    assert true;
+  public void interrupt() {
+    String jobId = getReference().getLastSegment();
+    logger.info("recieved request for interrupting the job with id " + jobId);
+    // TODO: the logic
   }
 
 }

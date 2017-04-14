@@ -3,20 +3,39 @@ package net.seninp.executor.resource;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
-import org.restlet.resource.Put;
 
+/**
+ * Working with jobs via REST interface.
+ * 
+ * @author psenin
+ *
+ */
 public interface ClusterJobResource {
 
+  /**
+   * Executing a new job.
+   * 
+   * @param job
+   */
   @Post
   public void run(ClusterJob job);
 
+  /**
+   * Getting a job info.
+   * 
+   * @return
+   */
   @Get("json")
-  public ClusterJob retrieve();
+  public Object retrieve();
 
-  @Put
-  public void update(ClusterJob job);
-
+  /**
+   * Interrupting a running job.
+   */
   @Delete
-  public void remove(Long jobId);
+  public void interrupt();
+
+  // @Put
+  // public void update(ClusterJob job);
+  //
 
 }

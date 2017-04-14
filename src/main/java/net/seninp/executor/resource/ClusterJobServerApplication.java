@@ -4,9 +4,9 @@ import org.restlet.Application;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.Restlet;
-import org.restlet.data.MediaType;
+import org.restlet.data.Form;
+import org.restlet.data.Method;
 import org.restlet.routing.Router;
-import net.seninp.executor.service.SGDService;
 
 /**
  * The main Executor app.
@@ -21,41 +21,36 @@ public class ClusterJobServerApplication extends Application {
 
     Router router = new Router(getContext());
 
+    // [1.0] list of jobs
     //
-    // [1.0]
-    // /json{jobId} reports a status of the job from database except the RUNNING state
-    // -- in this case it checks with the cluster
-    //
-    router.attach("/jobs/{jobid}", ClusterJobServerResource.class);
-
-    //
-    // [2.0]
-    // the /newjob URI expects JSON-formatted job to be POSTED for running with
-    // username, command line, and resources (CPU and MEM) specified
-    //
-    //
-    router.attach("/newjob", ClusterJobServerResource.class);
-
-    //
-    // [3.0]
-    // querying QSUB itself
-    //
-    // Create the handler
     Restlet clusterJob = new Restlet() {
       @Override
       public void handle(Request request, Response response) {
+        Method method = request.getMethod();
+        Form params = request.getResourceRef().getQueryAsForm();
 
-        String jobId = String.valueOf(request.getAttributes().get("jobid"));
+        // if params are empty,
 
-        String jobStatus = SGDService.getJobStatus(jobId);
+        System.out.println(method + " : " + params.toString());
 
+        // String jobId = String.valueOf(request.getAttributes().get("jobid"));
         //
-        String message = "Job status of job \"" + request.getAttributes().get("jobid") + "\": "
-            + jobStatus;
-        response.setEntity(message, MediaType.TEXT_PLAIN);
+        // String jobStatus = SGDService.getJobStatus(jobId);
+        //
+        // //
+        // String message = "Job status of job \"" + request.getAttributes().get("jobid") + "\": "
+        // + jobStatus;
+        // response.setEntity(message, MediaType.TEXT_PLAIN);
       }
     };
-    router.attach("/jobstatus/{jobid}", clusterJob);
+    router.attach("/jobs", clusterJob);
+
+    //
+    // [1.0]
+    //
+    // GET and DELETE processed directly by the resource
+    //
+    router.attach("/jobs/{jobid}", ClusterJobServerResource.class);
 
     //
     // voila!

@@ -32,7 +32,7 @@ public class JSONTestClient {
 
     //
     // Get the remote job as JSON
-    ClusterJob job = resource.retrieve();
+    ClusterJob job = (ClusterJob) resource.retrieve();
     if (job != null) {
       try {
         com.fasterxml.jackson.databind.ObjectMapper mapper = new ObjectMapper();
