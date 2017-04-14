@@ -54,7 +54,6 @@ public class ClusterJobServerResource extends ServerResource implements ClusterJ
     // Form form = getReference().getQueryAsForm();
     // String jobId = form.getFirstValue("jobid");
     String jobId = getReference().getLastSegment();
-    System.out.println(" ** -- > " + jobId);
     ClusterJob job = ExecutorDB.getClusterJob(Long.valueOf(jobId));
     //
     // TODO: if the job is NULL? i.e. doesnt exist, what shall we return?

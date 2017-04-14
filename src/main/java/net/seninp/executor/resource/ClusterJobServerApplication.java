@@ -26,7 +26,7 @@ public class ClusterJobServerApplication extends Application {
     // /json{jobId} reports a status of the job from database except the RUNNING state
     // -- in this case it checks with the cluster
     //
-    router.attach("/json/{jobid}", ClusterJobServerResource.class);
+    router.attach("/jobs/{jobid}", ClusterJobServerResource.class);
 
     //
     // [2.0]
