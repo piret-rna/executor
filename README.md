@@ -13,12 +13,14 @@ The RESTlet-based cluter job executor and monitor
  
 ### 0.1. REST URLSs
  
- * `GET /jobs` - get the list of currently active jobs
- * `GET /jobs?start=01-01-2012&end=01-31-2012` - get the list of ALL jobs for a date range
+ * `GET /jobs` - get the list of *currently active* jobs (i.e. running & scheduled)
+ * `GET /jobs?start=01-01-2012&end=01-31-2012` - get the list of *all* jobs for a date range
  
- * `GET /jobs?user=psenin` - get the list of _active_ jobs for the user psenin
- * `GET /jobs?user=psenin&start=01-01-2012&end=01-31-2012` - get the list of _active_ jobs for the user psenin and the date range
+ * `GET /jobs?user=psenin` - get the list of *active* jobs for the user psenin
+ * `GET /jobs?user=psenin&start=01-01-2012&end=01-31-2012` - get the list of *all* jobs for the user psenin and the date range
  
  * `GET /jobs/{jobid}` -- for getting the specific job as a JSON of the [ClusterJob](https://github.com/piret-rna/executor/blob/master/src/main/java/net/seninp/executor/resource/ClusterJob.java)
  * `POST /jobs` - schedule a new job for running using JSON of the [ClusterJob](https://github.com/piret-rna/executor/blob/master/src/main/java/net/seninp/executor/resource/ClusterJob.java)
  * `DELETE /jobs/{jobid}` -- for stopping the job with a specific jobid
+ 
+Note, that in order to get the list of all jobs (active, finished, and sceduled), the dates range must be specified
