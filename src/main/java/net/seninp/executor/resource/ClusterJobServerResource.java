@@ -2,12 +2,7 @@ package net.seninp.executor.resource;
 
 import org.apache.log4j.Logger;
 import org.restlet.resource.ServerResource;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import net.seninp.executor.ExecutorServer;
 import net.seninp.executor.db.ExecutorDB;
-import net.seninp.executor.service.SGDService;
 import net.seninp.executor.util.ErrorMessage;
 
 /**
@@ -21,37 +16,37 @@ public class ClusterJobServerResource extends ServerResource implements ClusterJ
     super();
   }
 
-  @Override
-  public void run(ClusterJob job) {
-
-    //
-    // print a debug message
-    try {
-      com.fasterxml.jackson.databind.ObjectMapper mapper = new ObjectMapper();
-      mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-      String jsonString = mapper.writeValueAsString(job);
-      System.out.println("Recieved the following JSON for the new job execution:\n" + jsonString);
-    }
-    catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
-
-    //
-    // if a null passed -- then do nothing
-    if (null == job) {
-      return;
-    }
-
-    if (job.validate()) {
-      //
-      // save the job in the DB
-      ExecutorDB.saveClusterJob(job);
-
-      SGDService executorInstance = SGDService.getInstance();
-      executorInstance.execute(job);
-    }
-
-  }
+  // @Override
+  // public void run(ClusterJob job) {
+  //
+  // //
+  // // print a debug message
+  // try {
+  // com.fasterxml.jackson.databind.ObjectMapper mapper = new ObjectMapper();
+  // mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+  // String jsonString = mapper.writeValueAsString(job);
+  // System.out.println("Recieved the following JSON for the new job execution:\n" + jsonString);
+  // }
+  // catch (JsonProcessingException e) {
+  // e.printStackTrace();
+  // }
+  //
+  // //
+  // // if a null passed -- then do nothing
+  // if (null == job) {
+  // return;
+  // }
+  //
+  // if (job.validate()) {
+  // //
+  // // save the job in the DB
+  // ExecutorDB.saveClusterJob(job);
+  //
+  // SGDService executorInstance = SGDService.getInstance();
+  // executorInstance.execute(job);
+  // }
+  //
+  // }
 
   @Override
   public Object retrieve() {

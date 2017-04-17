@@ -2,7 +2,6 @@ package net.seninp.executor.resource;
 
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
-import org.restlet.resource.Post;
 
 /**
  * Working with jobs via REST interface.
@@ -12,13 +11,13 @@ import org.restlet.resource.Post;
  */
 public interface ClusterJobResource {
 
-  /**
-   * Executing a new job.
-   * 
-   * @param job
-   */
-  @Post
-  public void run(ClusterJob job);
+//  /**
+//   * Executing a new job.
+//   * 
+//   * @param job
+//   */
+//  @Post
+//  public void run(ClusterJob job);
 
   /**
    * Getting a job info.
