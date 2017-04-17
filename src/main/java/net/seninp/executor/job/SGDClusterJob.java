@@ -71,6 +71,11 @@ public class SGDClusterJob implements Callable<JobCompletionStatus> {
 
   }
 
+  public ClusterJob execute() {
+    // save the thing to the DB -- the way to keep the job ID is to use DB primary ID key
+    return null;
+  }
+
   private JobCompletionStatus executeSystemCall(String script) {
     // todo: do stuff.
     return JobCompletionStatus.ENQUEUED;

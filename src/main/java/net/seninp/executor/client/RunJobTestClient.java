@@ -22,7 +22,7 @@ public class RunJobTestClient {
   private static final String URI = "http://localhost:8181/executor/jobs";
 
   /**
-   * Accepts threearguments -- (1) the command line (2) the CPU resource requirements and (3) the
+   * Accepts three arguments -- (1) the command line (2) the CPU resource requirements and (3) the
    * Memory requirements.
    * 
    * @param args
