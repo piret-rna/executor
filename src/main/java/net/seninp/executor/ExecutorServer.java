@@ -18,6 +18,10 @@ public class ExecutorServer {
 
   public static void main(String[] args) throws Exception {
 
+    // take care about properties
+    ExecutorServerProperties properties = new ExecutorServerProperties();
+    System.err.println(properties.echoProperties());
+
     // make sure the DB is initialized
     logger.info("attempting to initialize the DB");
     ExecutorDB.connect();
@@ -31,8 +35,11 @@ public class ExecutorServer {
     component.getServers().add(Protocol.HTTP, 8181);
 
     // Attach the sample application.
-    logger.info("attaching the Application to the /executor URI");
-    component.getDefaultHost().attach("/executor", new ClusterJobServerApplication());
+    logger.info("attaching the Application to the /"
+        + System.getProperty(ExecutorServerProperties.CONTEXT_ROOT_KEY) + " URI");
+    component.getDefaultHost().attach(
+        "/" + System.getProperty(ExecutorServerProperties.CONTEXT_ROOT_KEY),
+        new ClusterJobServerApplication());
 
     // Start the component.
     logger.info("going live");

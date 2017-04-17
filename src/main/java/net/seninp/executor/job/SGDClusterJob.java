@@ -1,9 +1,13 @@
 package net.seninp.executor.job;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.Callable;
+import org.apache.log4j.Logger;
+import net.seninp.executor.ExecutorServerProperties;
 import net.seninp.executor.resource.ClusterJob;
 import net.seninp.executor.resource.JobCompletionStatus;
 import net.seninp.executor.util.StackTrace;
@@ -16,6 +20,7 @@ import net.seninp.executor.util.StackTrace;
  */
 public class SGDClusterJob implements Callable<ClusterJob> {
 
+  final static Logger logger = Logger.getLogger(SGDClusterJob.class);
   private ClusterJob job;
 
   private static final String CR = "\n";
@@ -66,16 +71,29 @@ public class SGDClusterJob implements Callable<ClusterJob> {
   public ClusterJob call() throws Exception {
 
     //
-    // execute the job
+    // make the script
     this.command = job.getCommand();
-    this.jobName = String.valueOf(job.getId()) + "_job";
-    this.jobLog = String.valueOf(job.getId()) + "_job.log";
+    this.jobName = "job_" + String.valueOf(job.getId());
+    this.jobLog = System.getProperty(ExecutorServerProperties.APPLICATION_FOLDER_KEY)
+        + java.io.File.separator + "job_" + String.valueOf(job.getId()) + ".log";
     this.userEmail = "psenin@lanl.gov";
     this.cpuCores = job.getResourceCpu();
     this.memoryGigabytes = job.getResourceMem();
-    System.out.println("the job script:\n" + getScript());
 
-    return executeSystemCall(getScript());
+    String jobScript = getScript();
+    logger.debug("the new job script:\n" + jobScript);
+
+    //
+    // save script into a file
+    String scriptFname = "job_" + String.valueOf(job.getId()) + ".sh";
+    BufferedWriter bw = new BufferedWriter(new FileWriter(scriptFname));
+    bw.write(jobScript);
+    bw.close();
+
+    //
+    // and run it
+
+    return executeSystemCall(scriptFname);
 
   }
 
@@ -85,31 +103,31 @@ public class SGDClusterJob implements Callable<ClusterJob> {
    * @param script
    * @return
    */
-  private ClusterJob executeSystemCall(String script) {
+  private ClusterJob executeSystemCall(String scriptFname) {
 
     try {
 
-      Process p = new ProcessBuilder().command(command).start();
+      Process p = new ProcessBuilder().command("qsub", scriptFname).start();
       p.waitFor();
+
+      StringBuffer response = new StringBuffer("STDOUT response:\n");
 
       // System.out.println(" ... > querying stdOut... ");
       BufferedReader stdOut = new BufferedReader(new InputStreamReader(p.getInputStream()));
-      StringBuffer response = new StringBuffer("");
       String line = "";
       while ((line = stdOut.readLine()) != null) {
         response.append(line);
       }
       stdOut.close();
 
-      // System.out.println(" ... > querying stdErr... ");
-      if (0 == response.length()) {
-        stdOut = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-        while ((line = stdOut.readLine()) != null) {
-          response.append(line);
-        }
-        stdOut.close();
-
+      response.append("\nSTDIN response:\n");
+      BufferedReader stdIn = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+      while ((line = stdIn.readLine()) != null) {
+        response.append(line);
       }
+      stdIn.close();
+
+      logger.info("the execution results for job " + scriptFname + "\n" + response.toString());
 
     }
     catch (NullPointerException e) {

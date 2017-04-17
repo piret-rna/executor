@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.log4j.Logger;
+import net.seninp.executor.ExecutorServerProperties;
 import net.seninp.executor.resource.ClusterJob;
 import net.seninp.executor.util.StackTrace;
 
@@ -57,9 +58,12 @@ public class ExecutorDB {
       //
       StringBuilder dbHome = new StringBuilder();
       dbHome.append("jdbc:hsqldb:file:");
-      dbHome.append(System.getProperty("user.home"));
-      dbHome.append(java.io.File.separator);
-      dbHome.append(".executor/database");
+
+      // dbHome.append(System.getProperty("user.home"));
+      // dbHome.append(java.io.File.separator);
+      // dbHome.append(".executor/database");
+      dbHome.append(System.getProperty(ExecutorServerProperties.DB_DIR_KEY));
+
       dbHome.append(";shutdown=true");
 
       dbURI = dbHome.toString();
