@@ -3,16 +3,15 @@ package net.seninp.executor.service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import net.seninp.executor.job.AbstractExecutor;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import net.seninp.executor.job.SGDClusterJob;
 import net.seninp.executor.resource.ClusterJob;
-import net.seninp.executor.resource.JobCompletionStatus;
 import net.seninp.executor.util.StackTrace;
 
 /**
@@ -23,16 +22,26 @@ import net.seninp.executor.util.StackTrace;
  */
 public class SGDService extends AbstractExecutor<SGDClusterJob> {
 
-  List<Future<JobCompletionStatus>> jobsQueue;
+  // The executor for QSUB
+  // ExecutorService executorService = Executors.newFixedThreadPool(2);
+  private static ExecutorService executorService;
+  private static ExecutorCompletionService<ClusterJob> completionService;
 
-  ExecutorService executor;
+  // The executor for qstat
+  private static ScheduledExecutorService pollService;
 
   private static SGDService instance = new SGDService();
 
   private SGDService() {
     super();
-    jobsQueue = new ArrayList<Future<JobCompletionStatus>>();
-    executor = Executors.newFixedThreadPool(2);
+
+    executorService = Executors.newSingleThreadExecutor();
+    completionService = new ExecutorCompletionService<ClusterJob>(executorService);
+
+    pollService = Executors.newSingleThreadScheduledExecutor();
+
+    pollService.scheduleAtFixedRate(new JobCompletionPoller(), 1, 1, TimeUnit.MINUTES);
+
   }
 
   public static SGDService getInstance() {
@@ -44,9 +53,7 @@ public class SGDService extends AbstractExecutor<SGDClusterJob> {
 
     SGDClusterJob newJob = new SGDClusterJob(job);
 
-    Future<JobCompletionStatus> future = executor.submit(newJob);
-
-    jobsQueue.add(future);
+    completionService.submit(newJob);
 
   }
 
@@ -96,6 +103,20 @@ public class SGDService extends AbstractExecutor<SGDClusterJob> {
     }
 
     return null;
+  }
+
+  public class JobCompletionPoller implements Runnable {
+
+    @Override
+    public void run() {
+
+      Future<ClusterJob> finishedJob;
+      while (null != (finishedJob = completionService.poll())) {
+        System.out.println("*** finished job " + finishedJob);
+      }
+
+    }
+
   }
 
 }

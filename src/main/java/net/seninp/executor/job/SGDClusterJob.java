@@ -1,8 +1,12 @@
 package net.seninp.executor.job;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.concurrent.Callable;
 import net.seninp.executor.resource.ClusterJob;
 import net.seninp.executor.resource.JobCompletionStatus;
+import net.seninp.executor.util.StackTrace;
 
 /**
  * A facade for the ClusterJob tuned to SGD engine and executor.
@@ -10,7 +14,7 @@ import net.seninp.executor.resource.JobCompletionStatus;
  * @author psenin
  *
  */
-public class SGDClusterJob implements Callable<JobCompletionStatus> {
+public class SGDClusterJob implements Callable<ClusterJob> {
 
   private ClusterJob job;
 
@@ -51,17 +55,21 @@ public class SGDClusterJob implements Callable<JobCompletionStatus> {
   private String command;
 
   public SGDClusterJob(ClusterJob job) {
+    super();
+    if (0 == job.getId()) {
+      throw new NullPointerException("job id can't be null or 0");
+    }
     this.job = job;
   }
 
   @Override
-  public JobCompletionStatus call() throws Exception {
+  public ClusterJob call() throws Exception {
 
     //
     // execute the job
     this.command = job.getCommand();
-    this.jobName = "testJob";
-    this.jobLog = "testJob.log";
+    this.jobName = String.valueOf(job.getId()) + "_job";
+    this.jobLog = String.valueOf(job.getId()) + "_job.log";
     this.userEmail = "psenin@lanl.gov";
     this.cpuCores = job.getResourceCpu();
     this.memoryGigabytes = job.getResourceMem();
@@ -71,14 +79,69 @@ public class SGDClusterJob implements Callable<JobCompletionStatus> {
 
   }
 
-  public ClusterJob execute() {
-    // save the thing to the DB -- the way to keep the job ID is to use DB primary ID key
-    return null;
-  }
+  /**
+   * Execute the system call.
+   * 
+   * @param script
+   * @return
+   */
+  private ClusterJob executeSystemCall(String script) {
 
-  private JobCompletionStatus executeSystemCall(String script) {
-    // todo: do stuff.
-    return JobCompletionStatus.ENQUEUED;
+    try {
+
+      Process p = new ProcessBuilder().command(command).start();
+      p.waitFor();
+
+      // System.out.println(" ... > querying stdOut... ");
+      BufferedReader stdOut = new BufferedReader(new InputStreamReader(p.getInputStream()));
+      StringBuffer response = new StringBuffer("");
+      String line = "";
+      while ((line = stdOut.readLine()) != null) {
+        response.append(line);
+      }
+      stdOut.close();
+
+      // System.out.println(" ... > querying stdErr... ");
+      if (0 == response.length()) {
+        stdOut = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+        while ((line = stdOut.readLine()) != null) {
+          response.append(line);
+        }
+        stdOut.close();
+
+      }
+
+    }
+    catch (NullPointerException e) {
+      System.err.println("Apparently the script is not specified: " + StackTrace.toString(e));
+      this.job.setStatus(JobCompletionStatus.ERRORED);
+      this.job.setStatusTime(System.currentTimeMillis());
+    }
+    catch (IndexOutOfBoundsException e) {
+      System.err.println("Invalid command args: " + StackTrace.toString(e));
+      this.job.setStatus(JobCompletionStatus.ERRORED);
+      this.job.setStatusTime(System.currentTimeMillis());
+    }
+    catch (SecurityException e) {
+      System.err.println("Can not create a subprocess: " + StackTrace.toString(e));
+      this.job.setStatus(JobCompletionStatus.ERRORED);
+      this.job.setStatusTime(System.currentTimeMillis());
+    }
+    catch (IOException e) {
+      System.err.println("IO Exception happened: " + StackTrace.toString(e));
+      this.job.setStatus(JobCompletionStatus.ERRORED);
+      this.job.setStatusTime(System.currentTimeMillis());
+    }
+    catch (InterruptedException e) {
+      System.err
+          .println("Interruption occured while waiting for qsub output: " + StackTrace.toString(e));
+      this.job.setStatus(JobCompletionStatus.ERRORED);
+      this.job.setStatusTime(System.currentTimeMillis());
+    }
+
+    this.job.setStatus(JobCompletionStatus.ENQUEUED);
+    this.job.setStatusTime(System.currentTimeMillis());
+    return this.job;
   }
 
   protected String getScript() {

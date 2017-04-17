@@ -14,7 +14,8 @@ import org.restlet.routing.Router;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.seninp.executor.job.SGDClusterJob;
+import net.seninp.executor.db.ExecutorDB;
+import net.seninp.executor.service.SGDService;
 import net.seninp.executor.util.StackTrace;
 
 /**
@@ -57,13 +58,16 @@ public class ClusterJobServerApplication extends Application {
             ClusterJob newJob = mapper.readValue(jsonRepresentation, ClusterJob.class);
             logger.info("new job to be executed: " + newJob);
 
+            // create a DB record for the job
+            long dbId = ExecutorDB.saveClusterJob(newJob);
+            newJob.setId(dbId);
+
             // execute the job
-            SGDClusterJob sgdJob = new SGDClusterJob(newJob);
-            ClusterJob updatedJob = sgdJob.execute();
+            SGDService.getInstance().execute(newJob);
 
             // handle the response to the client
             JacksonRepresentation<ClusterJob> responseJobRepresentation = new JacksonRepresentation<ClusterJob>(
-                updatedJob);
+                newJob);
             response.bufferEntity();
             response.setStatus(Status.SUCCESS_CREATED);
             response.setEntity(responseJobRepresentation);

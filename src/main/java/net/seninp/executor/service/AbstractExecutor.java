@@ -1,4 +1,4 @@
-package net.seninp.executor.job;
+package net.seninp.executor.service;
 
 import net.seninp.executor.resource.ClusterJob;
 
