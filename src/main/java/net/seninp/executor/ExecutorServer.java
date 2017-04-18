@@ -32,7 +32,8 @@ public class ExecutorServer {
 
     // Add a new HTTP server listening on port 8181.
     logger.info("attaching the component to the port");
-    component.getServers().add(Protocol.HTTP, 8181);
+    component.getServers().add(Protocol.HTTP,
+        Integer.valueOf(System.getProperty(ExecutorServerProperties.PORT_KEY)));
 
     // Attach the sample application.
     logger.info("attaching the Application to the /"

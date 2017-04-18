@@ -1,6 +1,7 @@
 package net.seninp.executor.client;
 
 import java.io.IOException;
+import org.apache.log4j.Logger;
 import org.restlet.data.MediaType;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
@@ -8,6 +9,7 @@ import org.restlet.resource.ResourceException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.seninp.executor.ExecutorServerProperties;
 import net.seninp.executor.resource.ClusterJob;
 import net.seninp.executor.util.StackTrace;
 
@@ -19,7 +21,9 @@ import net.seninp.executor.util.StackTrace;
  */
 public class RunJobTestClient {
 
-  private static final String URI = "http://localhost:8181/executor/jobs";
+  final static Logger logger = Logger.getLogger(RunJobTestClient.class);
+
+  private static final String JOBS_CONTEXT_URI = "jobs";
 
   /**
    * Accepts three arguments -- (1) the command line (2) the CPU resource requirements and (3) the
@@ -28,6 +32,12 @@ public class RunJobTestClient {
    * @param args
    */
   public static void main(String[] args) {
+
+    // take care about properties
+    ExecutorServerProperties properties = new ExecutorServerProperties();
+    System.err.println(properties.echoProperties());
+    String URI = properties.getFullHost() + JOBS_CONTEXT_URI;
+    logger.info("job execution client to use " + URI + " URI");
 
     // check the CLI params
     //
@@ -42,8 +52,8 @@ public class RunJobTestClient {
     Integer cpuNum = Integer.valueOf(args[1]);
     Integer memGB = Integer.valueOf(args[2]);
 
-    System.out.println("Attempting to execute \"" + commandLine + "\" using " + cpuNum + "CPUs and "
-        + memGB + "GB of memory, " + " using \"" + URI + "\"");
+    logger.info("attempting to execute:\"" + commandLine + "\" using " + cpuNum + "CPUs and "
+        + memGB + "GB of memory");
 
     // create the new job object
     //
@@ -71,7 +81,8 @@ public class RunJobTestClient {
       // check for the updated job or an error message
       ObjectMapper mapper = new ObjectMapper();
       ClusterJob updatedJob = mapper.readValue(res.getText(), ClusterJob.class);
-      System.out.println(updatedJob);
+
+      logger.info("server responded with updated job record:" + updatedJob.toString());
     }
     catch (ResourceException e) {
       System.err.println("The client is unable to reach executor at " + URI
@@ -91,5 +102,6 @@ public class RunJobTestClient {
       assert true;
     }
 
+    logger.info("shutiing the client down");
   }
 }

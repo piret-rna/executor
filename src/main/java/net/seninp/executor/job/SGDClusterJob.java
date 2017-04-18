@@ -21,6 +21,7 @@ import net.seninp.executor.util.StackTrace;
 public class SGDClusterJob implements Callable<ClusterJob> {
 
   final static Logger logger = Logger.getLogger(SGDClusterJob.class);
+
   private ClusterJob job;
 
   private static final String CR = "\n";
@@ -40,7 +41,7 @@ public class SGDClusterJob implements Callable<ClusterJob> {
   // #$ -o <JOB_LOG>
   private static final String LOG_PREFIX = "#$ -o ";
   //
-  private static final String SUFFIX = "#$ -m abe\n#$ -j y\numask 002";
+  private static final String SUFFIX = "#$ -m abe\n#$ -j y";
 
   //
   // umask 002
@@ -81,7 +82,7 @@ public class SGDClusterJob implements Callable<ClusterJob> {
     this.memoryGigabytes = job.getResourceMem();
 
     String jobScript = getScript();
-    logger.debug("the new job script:\n" + jobScript);
+    logger.debug("the new job script: " + jobScript.replaceAll("\n", "\t"));
 
     //
     // save script into a file
@@ -89,25 +90,15 @@ public class SGDClusterJob implements Callable<ClusterJob> {
     BufferedWriter bw = new BufferedWriter(new FileWriter(scriptFname));
     bw.write(jobScript);
     bw.close();
+    logger.debug("the new job script saved into " + scriptFname);
 
     //
     // and run it
 
-    return executeSystemCall(scriptFname);
-
-  }
-
-  /**
-   * Execute the system call.
-   * 
-   * @param script
-   * @return
-   */
-  private ClusterJob executeSystemCall(String scriptFname) {
-
+    boolean errored = true;
     try {
 
-      Process p = new ProcessBuilder().command("qsub", scriptFname).start();
+      Process p = new ProcessBuilder().command("qsub", "-terse", scriptFname).start();
       p.waitFor();
 
       StringBuffer response = new StringBuffer("STDOUT response:\n");
@@ -115,50 +106,60 @@ public class SGDClusterJob implements Callable<ClusterJob> {
       // System.out.println(" ... > querying stdOut... ");
       BufferedReader stdOut = new BufferedReader(new InputStreamReader(p.getInputStream()));
       String line = "";
+      int lineCounter = 0;
       while ((line = stdOut.readLine()) != null) {
         response.append(line);
+        System.out.println("stdout: " + line);
+        lineCounter++;
       }
       stdOut.close();
-
-      response.append("\nSTDIN response:\n");
-      BufferedReader stdIn = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-      while ((line = stdIn.readLine()) != null) {
-        response.append(line);
+      if (1 == lineCounter) {
+        long sgeJobId = Long.valueOf(line).longValue();
+        logger.debug("the new Job Id: " + sgeJobId);
       }
-      stdIn.close();
 
-      logger.info("the execution results for job " + scriptFname + "\n" + response.toString());
+      response.append("\nSTDERR response:\n");
+      BufferedReader stdErr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+      while ((line = stdErr.readLine()) != null) {
+        response.append(line);
+        System.out.println("stderr: " + line);
+      }
+      stdErr.close();
+
+      logger.debug("the execution results for job " + scriptFname + "\n" + response.toString());
+      System.out
+          .println("the execution results for job " + scriptFname + "\n" + response.toString());
+
+      errored = false;
 
     }
     catch (NullPointerException e) {
       System.err.println("Apparently the script is not specified: " + StackTrace.toString(e));
-      this.job.setStatus(JobCompletionStatus.ERRORED);
-      this.job.setStatusTime(System.currentTimeMillis());
     }
     catch (IndexOutOfBoundsException e) {
       System.err.println("Invalid command args: " + StackTrace.toString(e));
-      this.job.setStatus(JobCompletionStatus.ERRORED);
-      this.job.setStatusTime(System.currentTimeMillis());
     }
     catch (SecurityException e) {
       System.err.println("Can not create a subprocess: " + StackTrace.toString(e));
-      this.job.setStatus(JobCompletionStatus.ERRORED);
-      this.job.setStatusTime(System.currentTimeMillis());
     }
     catch (IOException e) {
       System.err.println("IO Exception happened: " + StackTrace.toString(e));
-      this.job.setStatus(JobCompletionStatus.ERRORED);
-      this.job.setStatusTime(System.currentTimeMillis());
     }
     catch (InterruptedException e) {
       System.err
           .println("Interruption occured while waiting for qsub output: " + StackTrace.toString(e));
-      this.job.setStatus(JobCompletionStatus.ERRORED);
-      this.job.setStatusTime(System.currentTimeMillis());
+    }
+    finally {
+      if (errored) {
+        this.job.setStatus(JobCompletionStatus.ERRORED);
+        this.job.setStatusTime(System.currentTimeMillis());
+      }
+      else {
+        this.job.setStatus(JobCompletionStatus.ENQUEUED);
+        this.job.setStatusTime(System.currentTimeMillis());
+      }
     }
 
-    this.job.setStatus(JobCompletionStatus.ENQUEUED);
-    this.job.setStatusTime(System.currentTimeMillis());
     return this.job;
   }
 
