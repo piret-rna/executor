@@ -44,7 +44,7 @@ public class TestExecutorDB {
 
   @Test
   public void testDBURI() {
-    ExecutorDB.connect(sqlSessionFactory);
+    ExecutorDB.connect(TEST_DB_URI);
     assertTrue(TEST_DB_URI.equalsIgnoreCase(ExecutorDB.getDbURI()));
   }
 
