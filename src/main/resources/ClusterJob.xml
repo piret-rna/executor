@@ -56,35 +56,28 @@
     UPDATE CLUSTERJOB SET
     USERNAME = #{username},
     RESOURCE_CPU = #{resourceCpu},
-    RESOURCE_MEM =
-    #{resourceMem},
+    RESOURCE_MEM = #{resourceMem},
     COMMAND = #{command},
-    START_TIME =
-    #{startTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
-    END_TIME =
-    #{endTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
+    START_TIME = #{startTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
+    END_TIME = #{endTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
     JOB_STATUS = #{status},
-    STATUS_TIME =
-    #{statusTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler}
+    STATUS_TIME = #{statusTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler}
     WHERE JOBID = #{jobId}
   </update>
 
   <update id="updateClusterJobByDBId" parameterType="net.seninp.executor.resource.ClusterJob"
     flushCache="true" statementType="PREPARED" timeout="20">
     UPDATE CLUSTERJOB SET
-    JOBID = #{jobId}
+    JOBID = #{jobId},
     USERNAME = #{username},
     RESOURCE_CPU = #{resourceCpu},
     RESOURCE_MEM = #{resourceMem},
     COMMAND = #{command},
-    START_TIME =
-    #{startTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
-    END_TIME =
-    #{endTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
+    START_TIME = #{startTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
+    END_TIME = #{endTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
     JOB_STATUS = #{status},
-    STATUS_TIME =
-    #{statusTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler}
-    WHERE ID = #{Id}
+    STATUS_TIME = #{statusTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler}
+    WHERE ID = #{id}
   </update>
 
   <resultMap type="net.seninp.executor.resource.ClusterJob" id="usermap1">
@@ -101,23 +94,17 @@
     <!-- <result column="end_time" property="endTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/> -->
     <!-- <result column="status_time" property="statusTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/> -->
     <result column="start_time" property="startTime"
-      typeHandler="net.seninp.executor.db.TimestampHandler" javaType="Long"
-      jdbcType="TIMESTAMP" />
+      typeHandler="net.seninp.executor.db.TimestampHandler" javaType="Long" jdbcType="TIMESTAMP" />
     <result column="end_time" property="endTime"
-      typeHandler="net.seninp.executor.db.TimestampHandler" javaType="Long"
-      jdbcType="TIMESTAMP" />
+      typeHandler="net.seninp.executor.db.TimestampHandler" javaType="Long" jdbcType="TIMESTAMP" />
     <result column="status_time" property="statusTime"
-      typeHandler="net.seninp.executor.db.TimestampHandler" javaType="Long"
-      jdbcType="TIMESTAMP" />
+      typeHandler="net.seninp.executor.db.TimestampHandler" javaType="Long" jdbcType="TIMESTAMP" />
   </resultMap>
   <select id="getClusterJobBySGDId" parameterType="Long" resultMap="usermap1">
-    SELECT *
-    FROM CLUSTERJOB WHERE jobId = #{jobSGDId}
+    SELECT * FROM CLUSTERJOB WHERE jobId = #{jobSGDId}
   </select>
   <select id="getClusterJobByDBId" parameterType="Long" resultMap="usermap1">
-    SELECT
-    *
-    FROM CLUSTERJOB WHERE id = #{jobDBId}
+    SELECT * FROM CLUSTERJOB WHERE id = #{jobDBId}
   </select>
 
 </mapper>

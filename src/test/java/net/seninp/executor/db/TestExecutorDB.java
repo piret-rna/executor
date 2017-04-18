@@ -20,6 +20,7 @@ public class TestExecutorDB {
   private static SqlSessionFactory sqlSessionFactory;
 
   private static final String TEST_DB_URI = "jdbc:hsqldb:mem:testrnadb";
+
   private static final long TEST_JOBID = 7;
   private static final String TEST_UNAME = "psenin@lanl.gov";
   private static final int TEST_MEM = 77;
@@ -74,11 +75,60 @@ public class TestExecutorDB {
   }
 
   @Test
-  public void testUpdateJob() {
+  public void testUpdateJobByDBId() {
 
     ExecutorDB.connect(sqlSessionFactory);
 
     ClusterJob defaultJob = ExecutorDB.getClusterJobByDBId(0l);
+    // session.insert("saveClusterJob", new ClusterJob("psenin", "test cmd", 4, 8));
+
+    //
+    // test the default job
+    assertTrue("psenin".equalsIgnoreCase(defaultJob.getUsername()));
+    assertTrue("test cmd".equalsIgnoreCase(defaultJob.getCommand()));
+    assertEquals(4, defaultJob.getResourceCpu());
+    assertEquals(8, defaultJob.getResourceMem());
+    assertNull(defaultJob.getStartTime());
+    assertNull(defaultJob.getEndTime());
+    assertNull(defaultJob.getStatusTime());
+    assertNull(defaultJob.getStatus());
+
+    //
+    // updating the default job
+    defaultJob.setCommand(TEST_COMMAND);
+    defaultJob.setUsername(TEST_UNAME);
+    defaultJob.setResourceCpu(TEST_CPU);
+    defaultJob.setResourceMem(TEST_MEM);
+    defaultJob.setJobId(TEST_JOBID);
+
+    long tstamp = new Date().getTime();
+    defaultJob.setStartTime(tstamp);
+    defaultJob.setEndTime(tstamp + 1);
+    defaultJob.setStatusTime(tstamp + 2);
+    defaultJob.setStatus(JobCompletionStatus.COMPLETED);
+
+    ExecutorDB.updateClusterJobByDBId(defaultJob);
+
+    ClusterJob tJob = ExecutorDB.getClusterJobByDBId(0l);
+
+    assertTrue(TEST_UNAME.equalsIgnoreCase(tJob.getUsername()));
+    assertTrue(TEST_COMMAND.equalsIgnoreCase(tJob.getCommand()));
+    assertEquals(TEST_CPU, tJob.getResourceCpu());
+    assertEquals(TEST_MEM, tJob.getResourceMem());
+    assertEquals(TEST_JOBID, tJob.getJobId());
+    assertEquals(tstamp, tJob.getStartTime().longValue());
+    assertEquals(tstamp + 1, tJob.getEndTime().longValue());
+    assertEquals(tstamp + 2, tJob.getStatusTime().longValue());
+    assertEquals(JobCompletionStatus.COMPLETED, tJob.getStatus());
+
+  }
+  
+  @Test
+  public void testUpdateJobByJobId() {
+
+    ExecutorDB.connect(sqlSessionFactory);
+
+    ClusterJob defaultJob = ExecutorDB.getClusterJobBySGDId(0l);
     // session.insert("saveClusterJob", new ClusterJob("psenin", "test cmd", 4, 8));
 
     //
@@ -107,12 +157,13 @@ public class TestExecutorDB {
 
     ExecutorDB.updateClusterJobBySGDId(defaultJob);
 
-    ClusterJob tJob = ExecutorDB.getClusterJobBySGDId(defaultJob.getJobId());
+    ClusterJob tJob = ExecutorDB.getClusterJobBySGDId(0l);
 
     assertTrue(TEST_UNAME.equalsIgnoreCase(tJob.getUsername()));
     assertTrue(TEST_COMMAND.equalsIgnoreCase(tJob.getCommand()));
     assertEquals(TEST_CPU, tJob.getResourceCpu());
     assertEquals(TEST_MEM, tJob.getResourceMem());
+    assertEquals(0l, tJob.getJobId());
     assertEquals(tstamp, tJob.getStartTime().longValue());
     assertEquals(tstamp + 1, tJob.getEndTime().longValue());
     assertEquals(tstamp + 2, tJob.getStatusTime().longValue());
