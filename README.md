@@ -26,5 +26,5 @@ The RESTlet-based cluter job executor and monitor
 Note, that in order to get the list of all jobs (active, finished, and sceduled), the dates range must be specified
 
 ### 0.XXX Notes
- * before attempting the job execution, its configuration is stored in the DB -- the record's primary key is then used for teh job and log names, to track its progression and completion.
- * execution is handled via Java executor (fixed thread pool) which would wait 24 hors before killing the job... (configurable) 
+ * before attempting the job execution, its configuration is stored in the DB -- the record's primary key is then used for the job and log names, to track its progression and its completion ... 
+ * execution is handled via Java executor (fixed thread pool) ... 
