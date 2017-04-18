@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.util.concurrent.Callable;
 import org.apache.log4j.Logger;
 import net.seninp.executor.ExecutorServerProperties;
+import net.seninp.executor.db.ExecutorDB;
 import net.seninp.executor.resource.ClusterJob;
 import net.seninp.executor.resource.JobCompletionStatus;
 import net.seninp.executor.util.StackTrace;
@@ -94,7 +95,6 @@ public class SGDClusterJob implements Callable<ClusterJob> {
 
     //
     // and run it
-
     boolean errored = true;
     try {
 
@@ -117,6 +117,11 @@ public class SGDClusterJob implements Callable<ClusterJob> {
       if (1 == lineCounter) {
         long sgeJobId = Long.valueOf(oldline.trim()).longValue();
         logger.debug("the new Job Id: " + sgeJobId);
+
+        this.job.setJobId(sgeJobId);
+        ExecutorDB.updateClusterJobByDBId(this.job);
+        this.job.setStatus(JobCompletionStatus.ENQUEUED);
+        this.job.setStatusTime(System.currentTimeMillis());
       }
 
       response.append("\nSTDERR response:\n");
@@ -156,10 +161,6 @@ public class SGDClusterJob implements Callable<ClusterJob> {
     finally {
       if (errored) {
         this.job.setStatus(JobCompletionStatus.ERRORED);
-        this.job.setStatusTime(System.currentTimeMillis());
-      }
-      else {
-        this.job.setStatus(JobCompletionStatus.ENQUEUED);
         this.job.setStatusTime(System.currentTimeMillis());
       }
     }
