@@ -118,19 +118,37 @@ public class ExecutorDB {
   }
 
   /**
-   * Get the record by the job ID.
+   * Get the record by the job's SGD ID.
    * 
-   * @param jobId
+   * @param jobSGDId
    * @return
    */
-  public static ClusterJob getClusterJob(Long jobId) {
-    logger.info("getting a job with an id " + String.valueOf(jobId));
-    if (null == jobId || jobId < 0) {
-      logger.error("a suspicious ID given: " + String.valueOf(jobId) + ", skipping...");
+  public static ClusterJob getClusterJobBySGDId(Long jobSGDId) {
+    logger.info("getting a job with the SGD id " + String.valueOf(jobSGDId));
+    if (null == jobSGDId || jobSGDId < 0) {
+      logger.error("a suspicious ID given: " + String.valueOf(jobSGDId) + ", skipping...");
       return null;
     }
     SqlSession session = sqlSessionFactory.openSession();
-    ClusterJob job = session.selectOne("getClusterJobById", jobId);
+    ClusterJob job = session.selectOne("getClusterJobBySGDId", jobSGDId);
+    session.close();
+    return job;
+  }
+
+  /**
+   * Get the record by the job's DB ID.
+   * 
+   * @param jobDBId
+   * @return
+   */
+  public static ClusterJob getClusterJobByDBId(Long jobDBId) {
+    logger.info("getting a job with the SGD id " + String.valueOf(jobDBId));
+    if (null == jobDBId || jobDBId < 0) {
+      logger.error("a suspicious ID given: " + String.valueOf(jobDBId) + ", skipping...");
+      return null;
+    }
+    SqlSession session = sqlSessionFactory.openSession();
+    ClusterJob job = session.selectOne("getClusterJobByDBId", jobDBId);
     session.close();
     return job;
   }
@@ -157,14 +175,32 @@ public class ExecutorDB {
    * @param job
    * @return
    */
-  public static long updateClusterJob(ClusterJob job) {
-    logger.info(
-        "updating the cluster job instance with Id " + job.getJobId() + "{" + job.toString() + "}");
+  public static ClusterJob updateClusterJobBySGDId(ClusterJob job) {
+    logger.info("updating the cluster job instance with SGD Id " + job.getJobId() + "{"
+        + job.toString() + "}");
     SqlSession session = sqlSessionFactory.openSession();
-    session.update("updateClusterJob", job);
+    session.update("updateClusterJobBySGDId", job);
     session.commit();
+    ClusterJob res = session.selectOne("getClusterJobBySGDId", job.getJobId());
     session.close();
-    return job.getId();
+    return res;
+  }
+
+  /**
+   * Updates the cluster job record.
+   * 
+   * @param job
+   * @return
+   */
+  public static ClusterJob updateClusterJobByDBId(ClusterJob job) {
+    logger.info(
+        "updating the cluster job instance with DB Id " + job.getId() + "{" + job.toString() + "}");
+    SqlSession session = sqlSessionFactory.openSession();
+    session.update("updateClusterJobByDBId", job);
+    session.commit();
+    ClusterJob res = session.selectOne("getClusterJobByDBId", job.getId());
+    session.close();
+    return res;
   }
 
   /**
@@ -183,7 +219,7 @@ public class ExecutorDB {
       session.insert("createClusterJobTable");
 
       // add the test user if not in there
-      ClusterJob testJob = session.selectOne("getClusterJobById", 0l);
+      ClusterJob testJob = session.selectOne("getClusterJobByDBId", 0l);
       if (null == testJob) {
         session.insert("saveClusterJob", new ClusterJob("psenin", "test cmd", 4, 8));
         session.commit();

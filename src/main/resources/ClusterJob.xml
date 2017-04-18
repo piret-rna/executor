@@ -12,10 +12,12 @@
   <!-- CREATE THE USER TABLE -->
   <insert id="createClusterJobTable">
     CREATE TABLE IF NOT EXISTS CLUSTERJOB (
-    id INTEGER IDENTITY PRIMARY KEY,
+    id INTEGER IDENTITY
+    PRIMARY KEY,
     username varchar(255) NOT NULL,
     jobid INTEGER,
-    resource_cpu INTEGER,
+    resource_cpu
+    INTEGER,
     resource_mem INTEGER,
     command LONGVARCHAR,
     start_time TIMESTAMP,
@@ -29,55 +31,93 @@
     SELECT * FROM
     INFORMATION_SCHEMA.SYSTEM_TABLES
     WHERE TABLE_SCHEM = 'PUBLIC'
-    AND TABLE_NAME = 'CLUSTERJOB'
+    AND TABLE_NAME =
+    'CLUSTERJOB'
   </select>
 
   <insert id="saveClusterJob" parameterType="net.seninp.executor.resource.ClusterJob"
     flushCache="true" statementType="PREPARED" useGeneratedKeys="true"
     keyProperty="id" timeout="20">
     INSERT INTO CLUSTERJOB
-    (USERNAME, JOBID, RESOURCE_CPU, RESOURCE_MEM, COMMAND, START_TIME, END_TIME, JOB_STATUS, STATUS_TIME)
+    (USERNAME, JOBID,
+    RESOURCE_CPU, RESOURCE_MEM, COMMAND, START_TIME, END_TIME, JOB_STATUS,
+    STATUS_TIME)
     VALUES
-    (#{username}, #{jobId}, #{resourceCpu}, #{resourceMem}, #{command}, 
-    #{startTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler}, 
+    (#{username}, #{jobId}, #{resourceCpu}, #{resourceMem},
+    #{command},
+    #{startTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
     #{endTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
-    #{status}, 
+    #{status},
     #{statusTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler})
   </insert>
-  
-  <update id="updateClusterJob" parameterType="net.seninp.executor.resource.ClusterJob"
+
+  <update id="updateClusterJobBySGDId" parameterType="net.seninp.executor.resource.ClusterJob"
     flushCache="true" statementType="PREPARED" timeout="20">
     UPDATE CLUSTERJOB SET
-    USERNAME = #{username}, 
-    RESOURCE_CPU = #{resourceCpu}, 
-    RESOURCE_MEM = #{resourceMem}, 
-    COMMAND = #{command}, 
-    START_TIME = #{startTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler}, 
-    END_TIME = #{endTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler}, 
-    JOB_STATUS = #{status}, 
-    STATUS_TIME = #{statusTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler}
+    USERNAME = #{username},
+    RESOURCE_CPU = #{resourceCpu},
+    RESOURCE_MEM =
+    #{resourceMem},
+    COMMAND = #{command},
+    START_TIME =
+    #{startTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
+    END_TIME =
+    #{endTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
+    JOB_STATUS = #{status},
+    STATUS_TIME =
+    #{statusTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler}
     WHERE JOBID = #{jobId}
   </update>
 
+  <update id="updateClusterJobByDBId" parameterType="net.seninp.executor.resource.ClusterJob"
+    flushCache="true" statementType="PREPARED" timeout="20">
+    UPDATE CLUSTERJOB SET
+    JOBID = #{jobId}
+    USERNAME = #{username},
+    RESOURCE_CPU = #{resourceCpu},
+    RESOURCE_MEM = #{resourceMem},
+    COMMAND = #{command},
+    START_TIME =
+    #{startTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
+    END_TIME =
+    #{endTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
+    JOB_STATUS = #{status},
+    STATUS_TIME =
+    #{statusTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler}
+    WHERE ID = #{Id}
+  </update>
+
   <resultMap type="net.seninp.executor.resource.ClusterJob" id="usermap1">
-    <id column="id" property="id"/>
-    <result column="jobid" property="jobId"/>
-    <result column="command" property="command"/>
-    <result column="resource_cpu" property="resourceCpu"/>
-    <result column="resource_mem" property="resourceMem"/>
-    <result column="job_status" property="status" typeHandler="net.seninp.executor.db.JobStatusHandler" 
-                                              javaType="net.seninp.executor.resource.JobCompletionStatus" jdbcType="VARCHAR"/>
-    <result column="username" property="username"/>
-    <!--  <result column="start_time" property="startTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/> -->
-    <!--  <result column="end_time" property="endTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/> -->
-    <!--  <result column="status_time" property="statusTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/> -->
-    <result column="start_time" property="startTime" typeHandler="net.seninp.executor.db.TimestampHandler" javaType="Long" jdbcType="TIMESTAMP"/>
-    <result column="end_time" property="endTime" typeHandler="net.seninp.executor.db.TimestampHandler"  javaType="Long" jdbcType="TIMESTAMP"/>
-    <result column="status_time" property="statusTime" typeHandler="net.seninp.executor.db.TimestampHandler"  javaType="Long" jdbcType="TIMESTAMP"/>
+    <id column="id" property="id" />
+    <result column="jobid" property="jobId" />
+    <result column="command" property="command" />
+    <result column="resource_cpu" property="resourceCpu" />
+    <result column="resource_mem" property="resourceMem" />
+    <result column="job_status" property="status"
+      typeHandler="net.seninp.executor.db.JobStatusHandler" javaType="net.seninp.executor.resource.JobCompletionStatus"
+      jdbcType="VARCHAR" />
+    <result column="username" property="username" />
+    <!-- <result column="start_time" property="startTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/> -->
+    <!-- <result column="end_time" property="endTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/> -->
+    <!-- <result column="status_time" property="statusTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/> -->
+    <result column="start_time" property="startTime"
+      typeHandler="net.seninp.executor.db.TimestampHandler" javaType="Long"
+      jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime"
+      typeHandler="net.seninp.executor.db.TimestampHandler" javaType="Long"
+      jdbcType="TIMESTAMP" />
+    <result column="status_time" property="statusTime"
+      typeHandler="net.seninp.executor.db.TimestampHandler" javaType="Long"
+      jdbcType="TIMESTAMP" />
   </resultMap>
-  <select id="getClusterJobById" parameterType="Long"
-    resultMap="usermap1">
-    SELECT * FROM CLUSTERJOB WHERE jobId = #{jobId}
+  <select id="getClusterJobBySGDId" parameterType="Long" resultMap="usermap1">
+    SELECT *
+    FROM CLUSTERJOB WHERE jobId = #{jobSGDId}
+  </select>
+  <select id="getClusterJobByDBId" parameterType="Long" resultMap="usermap1">
+    SELECT
+    *
+    FROM CLUSTERJOB WHERE id = #{jobDBId}
   </select>
 
 </mapper>

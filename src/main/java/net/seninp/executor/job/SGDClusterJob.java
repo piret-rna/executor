@@ -98,23 +98,24 @@ public class SGDClusterJob implements Callable<ClusterJob> {
     boolean errored = true;
     try {
 
+      // in the case of success "qsub -terse" prints the job id into STDOUT and quits
       Process p = new ProcessBuilder().command("qsub", "-terse", scriptFname).start();
       p.waitFor();
 
       StringBuffer response = new StringBuffer("STDOUT response:\n");
-
-      // System.out.println(" ... > querying stdOut... ");
       BufferedReader stdOut = new BufferedReader(new InputStreamReader(p.getInputStream()));
-      String line = "";
+
+      String line, oldline = "";
       int lineCounter = 0;
       while ((line = stdOut.readLine()) != null) {
         response.append(line);
         System.out.println("stdout: " + line);
-        lineCounter++;
+        lineCounter = lineCounter + 1;
+        oldline = line;
       }
       stdOut.close();
       if (1 == lineCounter) {
-        long sgeJobId = Long.valueOf(line).longValue();
+        long sgeJobId = Long.valueOf(oldline.trim()).longValue();
         logger.debug("the new Job Id: " + sgeJobId);
       }
 
@@ -122,16 +123,12 @@ public class SGDClusterJob implements Callable<ClusterJob> {
       BufferedReader stdErr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
       while ((line = stdErr.readLine()) != null) {
         response.append(line);
-        System.out.println("stderr: " + line);
       }
       stdErr.close();
 
       logger.debug("the execution results for job " + scriptFname + "\n" + response.toString());
-      System.out
-          .println("the execution results for job " + scriptFname + "\n" + response.toString());
 
       errored = false;
-
     }
     catch (NullPointerException e) {
       System.err.println("Apparently the script is not specified: " + StackTrace.toString(e));
@@ -148,6 +145,13 @@ public class SGDClusterJob implements Callable<ClusterJob> {
     catch (InterruptedException e) {
       System.err
           .println("Interruption occured while waiting for qsub output: " + StackTrace.toString(e));
+    }
+    catch (NumberFormatException e) {
+      System.err.println(
+          "Interruption occured while recognizing the new job ID: " + StackTrace.toString(e));
+    }
+    catch (Exception e) {
+      System.err.println("Unknown exception caught: " + StackTrace.toString(e));
     }
     finally {
       if (errored) {

@@ -60,7 +60,7 @@ public class ClusterJobServerResource extends ServerResource implements ClusterJ
     }
 
     // TODO: shall we update the job status right here???
-    ClusterJob job = ExecutorDB.getClusterJob(Long.valueOf(jobId));
+    ClusterJob job = ExecutorDB.getClusterJobBySGDId(Long.valueOf(jobId));
 
     return job;
   }

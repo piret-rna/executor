@@ -61,7 +61,7 @@ public class TestExecutorDB {
     job.setStatus(JobCompletionStatus.ENQUEUED);
     ExecutorDB.saveClusterJob(job);
 
-    ClusterJob tJob = ExecutorDB.getClusterJob(TEST_JOBID);
+    ClusterJob tJob = ExecutorDB.getClusterJobBySGDId(TEST_JOBID);
     assertTrue(TEST_UNAME.equalsIgnoreCase(tJob.getUsername()));
     assertTrue(TEST_COMMAND.equalsIgnoreCase(tJob.getCommand()));
     assertEquals(TEST_CPU, tJob.getResourceCpu());
@@ -78,7 +78,7 @@ public class TestExecutorDB {
 
     ExecutorDB.connect(sqlSessionFactory);
 
-    ClusterJob defaultJob = ExecutorDB.getClusterJob(0l);
+    ClusterJob defaultJob = ExecutorDB.getClusterJobByDBId(0l);
     // session.insert("saveClusterJob", new ClusterJob("psenin", "test cmd", 4, 8));
 
     //
@@ -105,10 +105,10 @@ public class TestExecutorDB {
     defaultJob.setStatusTime(tstamp + 2);
     defaultJob.setStatus(JobCompletionStatus.COMPLETED);
 
-    ExecutorDB.updateClusterJob(defaultJob);
+    ExecutorDB.updateClusterJobBySGDId(defaultJob);
 
-    ClusterJob tJob = ExecutorDB.getClusterJob(defaultJob.getJobId());
-    
+    ClusterJob tJob = ExecutorDB.getClusterJobBySGDId(defaultJob.getJobId());
+
     assertTrue(TEST_UNAME.equalsIgnoreCase(tJob.getUsername()));
     assertTrue(TEST_COMMAND.equalsIgnoreCase(tJob.getCommand()));
     assertEquals(TEST_CPU, tJob.getResourceCpu());
