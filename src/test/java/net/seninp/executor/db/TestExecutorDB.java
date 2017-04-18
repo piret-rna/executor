@@ -26,6 +26,7 @@ public class TestExecutorDB {
   private static final int TEST_MEM = 77;
   private static final int TEST_CPU = 88;
   private static final String TEST_COMMAND = "test_cmd a b c";
+  private static final String TEST_NOTES = "notes str";
 
   @BeforeClass
   public static void Before() throws IOException {
@@ -60,6 +61,7 @@ public class TestExecutorDB {
     job.setEndTime(tstamp + 1);
     job.setStatusTime(tstamp + 2);
     job.setStatus(JobCompletionStatus.ENQUEUED);
+    job.setNotes(TEST_NOTES);
     ExecutorDB.saveClusterJob(job);
 
     ClusterJob tJob = ExecutorDB.getClusterJobBySGDId(TEST_JOBID);
@@ -71,6 +73,7 @@ public class TestExecutorDB {
     assertEquals(tstamp + 1, tJob.getEndTime().longValue());
     assertEquals(tstamp + 2, tJob.getStatusTime().longValue());
     assertEquals(JobCompletionStatus.ENQUEUED, job.getStatus());
+    assertTrue(TEST_NOTES.equalsIgnoreCase(tJob.getNotes()));
 
   }
 
@@ -92,6 +95,7 @@ public class TestExecutorDB {
     assertNull(defaultJob.getEndTime());
     assertNull(defaultJob.getStatusTime());
     assertNull(defaultJob.getStatus());
+    assertNull(defaultJob.getNotes());
 
     //
     // updating the default job
@@ -100,6 +104,7 @@ public class TestExecutorDB {
     defaultJob.setResourceCpu(TEST_CPU);
     defaultJob.setResourceMem(TEST_MEM);
     defaultJob.setJobId(TEST_JOBID);
+    defaultJob.setNotes(TEST_NOTES);
 
     long tstamp = new Date().getTime();
     defaultJob.setStartTime(tstamp);
@@ -120,9 +125,10 @@ public class TestExecutorDB {
     assertEquals(tstamp + 1, tJob.getEndTime().longValue());
     assertEquals(tstamp + 2, tJob.getStatusTime().longValue());
     assertEquals(JobCompletionStatus.COMPLETED, tJob.getStatus());
+    assertTrue(TEST_NOTES.equalsIgnoreCase(tJob.getNotes()));
 
   }
-  
+
   @Test
   public void testUpdateJobByJobId() {
 
@@ -148,6 +154,7 @@ public class TestExecutorDB {
     defaultJob.setUsername(TEST_UNAME);
     defaultJob.setResourceCpu(TEST_CPU);
     defaultJob.setResourceMem(TEST_MEM);
+    defaultJob.setNotes(TEST_NOTES);
 
     long tstamp = new Date().getTime();
     defaultJob.setStartTime(tstamp);
@@ -168,6 +175,7 @@ public class TestExecutorDB {
     assertEquals(tstamp + 1, tJob.getEndTime().longValue());
     assertEquals(tstamp + 2, tJob.getStatusTime().longValue());
     assertEquals(JobCompletionStatus.COMPLETED, tJob.getStatus());
+    assertTrue(TEST_NOTES.equalsIgnoreCase(tJob.getNotes()));
 
   }
 }

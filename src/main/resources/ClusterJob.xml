@@ -23,7 +23,8 @@
     start_time TIMESTAMP,
     end_time TIMESTAMP,
     job_status VARCHAR(64),
-    status_time TIMESTAMP
+    status_time TIMESTAMP,
+    notes LONGVARCHAR
     );
   </insert>
 
@@ -41,14 +42,15 @@
     INSERT INTO CLUSTERJOB
     (USERNAME, JOBID,
     RESOURCE_CPU, RESOURCE_MEM, COMMAND, START_TIME, END_TIME, JOB_STATUS,
-    STATUS_TIME)
+    STATUS_TIME, NOTES)
     VALUES
     (#{username}, #{jobId}, #{resourceCpu}, #{resourceMem},
     #{command},
     #{startTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
     #{endTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
     #{status},
-    #{statusTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler})
+    #{statusTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
+    #{notes})
   </insert>
 
   <update id="updateClusterJobBySGDId" parameterType="net.seninp.executor.resource.ClusterJob"
@@ -61,7 +63,8 @@
     START_TIME = #{startTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
     END_TIME = #{endTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
     JOB_STATUS = #{status},
-    STATUS_TIME = #{statusTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler}
+    STATUS_TIME = #{statusTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
+    NOTES = #{notes}
     WHERE JOBID = #{jobId}
   </update>
 
@@ -76,7 +79,8 @@
     START_TIME = #{startTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
     END_TIME = #{endTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
     JOB_STATUS = #{status},
-    STATUS_TIME = #{statusTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler}
+    STATUS_TIME = #{statusTime,javaType=Long,jdbcType=TIMESTAMP,typeHandler=net.seninp.executor.db.TimestampHandler},
+    NOTES = #{notes}
     WHERE ID = #{id}
   </update>
 
@@ -93,12 +97,10 @@
     <!-- <result column="start_time" property="startTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/> -->
     <!-- <result column="end_time" property="endTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/> -->
     <!-- <result column="status_time" property="statusTime" typeHandler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/> -->
-    <result column="start_time" property="startTime"
-      typeHandler="net.seninp.executor.db.TimestampHandler" javaType="Long" jdbcType="TIMESTAMP" />
-    <result column="end_time" property="endTime"
-      typeHandler="net.seninp.executor.db.TimestampHandler" javaType="Long" jdbcType="TIMESTAMP" />
-    <result column="status_time" property="statusTime"
-      typeHandler="net.seninp.executor.db.TimestampHandler" javaType="Long" jdbcType="TIMESTAMP" />
+    <result column="start_time" property="startTime" typeHandler="net.seninp.executor.db.TimestampHandler" javaType="Long" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" typeHandler="net.seninp.executor.db.TimestampHandler" javaType="Long" jdbcType="TIMESTAMP" />
+    <result column="status_time" property="statusTime" typeHandler="net.seninp.executor.db.TimestampHandler" javaType="Long" jdbcType="TIMESTAMP" />
+    <result column="notes" property="notes" />
   </resultMap>
   <select id="getClusterJobBySGDId" parameterType="Long" resultMap="usermap1">
     SELECT * FROM CLUSTERJOB WHERE jobId = #{jobSGDId}

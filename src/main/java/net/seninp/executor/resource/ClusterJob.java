@@ -32,6 +32,8 @@ public class ClusterJob implements Serializable {
 
   private Long statusTime;
 
+  private String notes;
+
   public ClusterJob() {
     super();
   }
@@ -172,6 +174,14 @@ public class ClusterJob implements Serializable {
 
   public void setResourceMem(int resourceMem) {
     this.resourceMem = resourceMem;
+  }
+
+  public String getNotes() {
+    return notes;
+  }
+
+  public void setNotes(String notes) {
+    this.notes = notes;
   }
 
   public boolean validate() {

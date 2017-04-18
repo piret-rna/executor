@@ -4,14 +4,18 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import org.apache.log4j.Logger;
 import net.seninp.executor.job.SGDClusterJob;
 import net.seninp.executor.resource.ClusterJob;
+import net.seninp.executor.resource.JobCompletionStatus;
 import net.seninp.executor.util.StackTrace;
 
 /**
@@ -22,12 +26,16 @@ import net.seninp.executor.util.StackTrace;
  */
 public class SGDService extends AbstractExecutor<SGDClusterJob> {
 
+  final static Logger logger = Logger.getLogger(SGDClusterJob.class);
+
   // The executor for QSUB
+  //
   // ExecutorService executorService = Executors.newFixedThreadPool(2);
   private static ExecutorService executorService;
   private static ExecutorCompletionService<ClusterJob> completionService;
 
   // The executor for qstat
+  //
   private static ScheduledExecutorService pollService;
 
   private static SGDService instance = new SGDService();
@@ -39,7 +47,6 @@ public class SGDService extends AbstractExecutor<SGDClusterJob> {
     completionService = new ExecutorCompletionService<ClusterJob>(executorService);
 
     pollService = Executors.newSingleThreadScheduledExecutor();
-
     pollService.scheduleAtFixedRate(new JobCompletionPoller(), 1, 1, TimeUnit.MINUTES);
 
   }
@@ -112,7 +119,20 @@ public class SGDService extends AbstractExecutor<SGDClusterJob> {
 
       Future<ClusterJob> finishedJob;
       while (null != (finishedJob = completionService.poll())) {
-        System.out.println("*** finished job " + finishedJob);
+        try {
+          ClusterJob job = finishedJob.get();
+          if (JobCompletionStatus.ENQUEUED.equals(job.getStatus())) {
+            logger.info("The job with SGE ID " + job.getJobId() + " was enqueued at "
+                + new Date(job.getStatusTime()));
+          }
+          else if (JobCompletionStatus.ERRORED.equals(job.getStatus())) {
+            logger.info("The job with DB ID " + job.getId() + " errored at "
+                + new Date(job.getStatusTime()));
+          }
+        }
+        catch (InterruptedException | ExecutionException e) {
+          e.printStackTrace();
+        }
       }
 
     }
