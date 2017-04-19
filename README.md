@@ -23,7 +23,7 @@ The RESTlet-based cluter job executor and monitor
  * `POST /jobs` - schedule a new job for running using JSON of the [ClusterJob](https://github.com/piret-rna/executor/blob/master/src/main/java/net/seninp/executor/resource/ClusterJob.java)
  * `DELETE /jobs/{jobid}` -- for stopping a job with a specific jobid
  
-Note, that in order to get the list of all jobs (active, finished, and sceduled), the dates range must be specified
+Note, that in order to get the list of all jobs (active, finished, and sceduled), the date range must be specified
 
 ### 0.XXX Notes
  * before attempting the job execution, its configuration is stored in the DB -- the record's primary key is then used for the job and log names, to track its progression and its completion ... 
