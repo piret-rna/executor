@@ -5,11 +5,11 @@ The RESTlet-based cluter job executor and monitor
 [![Build Status](https://travis-ci.org/piret-rna/executor.svg?branch=master)](https://travis-ci.org/piret-rna/executor) 
 [![codecov.io](http://codecov.io/github/piret-rna/executor/coverage.svg?branch=master)](http://codecov.io/github/piret-rna/executor?branch=master)
 
-### 0.0 An API
+### 0.0 The REST API
 
  * `POST` -- run a new job, the username & command line are required, required resources specification is optional
  * `GET` -- get the job(s) as JSON, the jobID is required
- * `DLETE` -- interrupt a running job, the jobID is required
+ * `DELETE` -- interrupt a running job, the jobID is required
  
 ### 0.1. REST URLSs
  
