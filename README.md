@@ -11,8 +11,8 @@ The RESTlet-based cluter job executor and monitor
  * `GET` -- get the job(s) as JSON, the jobID is required
  * `DELETE` -- interrupt a running job, the jobID is required
  
-### 0.1. REST URLSs
- 
+### 0.1. REST API usage examples
+
  * `GET /jobs` - get the list of *currently active* jobs (i.e. running & scheduled)
  * `GET /jobs?start=01-01-2012&end=01-31-2012` - get the list of *all* jobs for a date range
  
