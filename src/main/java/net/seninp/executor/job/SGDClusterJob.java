@@ -102,14 +102,13 @@ public class SGDClusterJob implements Callable<ClusterJob> {
       Process p = new ProcessBuilder().command("qsub", "-terse", scriptFname).start();
       p.waitFor();
 
-      StringBuffer response = new StringBuffer("STDOUT response:\n");
+      StringBuffer response = new StringBuffer("STDOUT response: '");
       BufferedReader stdOut = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
       String line, oldline = "";
       int lineCounter = 0;
       while ((line = stdOut.readLine()) != null) {
-        response.append(line);
-        System.out.println("stdout: " + line);
+        response.append(line).append(";");
         lineCounter = lineCounter + 1;
         oldline = line;
       }
@@ -119,19 +118,19 @@ public class SGDClusterJob implements Callable<ClusterJob> {
         logger.debug("the new Job Id: " + sgeJobId);
 
         this.job.setJobId(sgeJobId);
-        ExecutorDB.updateClusterJobByDBId(this.job);
         this.job.setStatus(JobCompletionStatus.ENQUEUED);
         this.job.setStatusTime(System.currentTimeMillis());
       }
 
-      response.append("\nSTDERR response:\n");
+      response.append("'; STDERR response: '");
       BufferedReader stdErr = new BufferedReader(new InputStreamReader(p.getErrorStream()));
       while ((line = stdErr.readLine()) != null) {
-        response.append(line);
+        response.append(line).append(";");
       }
       stdErr.close();
 
-      logger.debug("the execution results for job " + scriptFname + "\n" + response.toString());
+      logger
+          .debug("the execution results for job " + scriptFname + ": " + response.toString() + "'");
 
       errored = false;
     }
@@ -165,6 +164,7 @@ public class SGDClusterJob implements Callable<ClusterJob> {
       }
     }
 
+    ExecutorDB.updateClusterJobByDBId(this.job);
     return this.job;
   }
 

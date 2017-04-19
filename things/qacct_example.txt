@@ -1,0 +1,53 @@
+$ qacct -j 25608
+==============================================================
+qname        all.q               
+hostname     n0821.cm.cluster    
+group        genome_users        
+owner        222935              
+project      NONE                
+department   defaultdepartment   
+jobname      job_1               
+jobnumber    25608               
+taskid       undefined
+account      sge                 
+priority     0                   
+cwd          NONE                
+submit_host  seq-fe4.cm.cluster  
+submit_cmd   qsub -terse job_1.sh
+qsub_time    04/18/2017 15:49:46.369
+start_time   04/18/2017 15:49:46.419
+end_time     04/18/2017 16:33:33.621
+granted_pe   smp                 
+slots        4                   
+failed       0    
+deleted_by   NONE
+exit_status  0                   
+ru_wallclock 2627.202     
+ru_utime     2115.500     
+ru_stime     30.809       
+ru_maxrss    43288               
+ru_ixrss     0                   
+ru_ismrss    0                   
+ru_idrss     0                   
+ru_isrss     0                   
+ru_minflt    344398              
+ru_majflt    6                   
+ru_nswap     0                   
+ru_inblock   4816                
+ru_oublock   5592272             
+ru_msgsnd    0                   
+ru_msgrcv    0                   
+ru_nsignals  0                   
+ru_nvcsw     308715              
+ru_nivcsw    3163                
+wallclock    13136.180    
+cpu          2146.309     
+mem          105.832           
+io           7.735             
+iow          1.890             
+ioops        171372              
+maxvmem      165.051M
+maxrss       0.000
+maxpss       0.000
+arid         undefined
+jc_name      NONE

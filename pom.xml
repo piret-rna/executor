@@ -316,6 +316,11 @@
       <artifactId>org.restlet.ext.jackson</artifactId>
       <version>${restlet.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.beust</groupId>
+      <artifactId>jcommander</artifactId>
+      <version>1.60</version>
+    </dependency>
 
   </dependencies>
 

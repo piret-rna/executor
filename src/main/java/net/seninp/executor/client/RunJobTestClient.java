@@ -37,7 +37,7 @@ public class RunJobTestClient {
     ExecutorServerProperties properties = new ExecutorServerProperties();
     System.err.println(properties.echoProperties());
     String URI = properties.getFullHost() + JOBS_CONTEXT_URI;
-    logger.info("job execution client to use " + URI + " URI");
+    logger.info("job execution client to use \"" + URI + "\" URI");
 
     // check the CLI params
     //
@@ -52,7 +52,7 @@ public class RunJobTestClient {
     Integer cpuNum = Integer.valueOf(args[1]);
     Integer memGB = Integer.valueOf(args[2]);
 
-    logger.info("attempting to execute:\"" + commandLine + "\" using " + cpuNum + "CPUs and "
+    logger.info("attempting to execute: \"" + commandLine + "\" using " + cpuNum + "CPUs and "
         + memGB + "GB of memory");
 
     // create the new job object
@@ -82,7 +82,7 @@ public class RunJobTestClient {
       ObjectMapper mapper = new ObjectMapper();
       ClusterJob updatedJob = mapper.readValue(res.getText(), ClusterJob.class);
 
-      logger.info("server responded with updated job record:" + updatedJob.toString());
+      logger.info("server responded with updated job record: " + updatedJob.toString());
     }
     catch (ResourceException e) {
       System.err.println("The client is unable to reach executor at " + URI
@@ -102,6 +102,6 @@ public class RunJobTestClient {
       assert true;
     }
 
-    logger.info("shutiing the client down");
+    logger.info("shutting the client down");
   }
 }

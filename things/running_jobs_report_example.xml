@@ -1,0 +1,30 @@
+<?xml version='1.0'?>
+<job_info
+  xmlns:xsd="https://github.com/gridengine/gridengine/raw/master/source/dist/util/resources/schemas/qstat/qstat.xsd">
+  <queue_info>
+    <job_list state="running">
+      <JB_job_number>25602</JB_job_number>
+      <JAT_prio>0.53703</JAT_prio>
+      <JB_name>job_1</JB_name>
+      <JB_owner>222935</JB_owner>
+      <state>r</state>
+      <JAT_start_time>2017-04-18T14:40:58.735</JAT_start_time>
+      <queue_name>all.q@n0823.cm.cluster</queue_name>
+      <jclass_name></jclass_name>
+      <slots>4</slots>
+    </job_list>
+    <job_list state="running">
+      <JB_job_number>25603</JB_job_number>
+      <JAT_prio>0.52828</JAT_prio>
+      <JB_name>job_2</JB_name>
+      <JB_owner>222935</JB_owner>
+      <state>r</state>
+      <JAT_start_time>2017-04-18T15:16:21.277</JAT_start_time>
+      <queue_name>all.q@n0824.cm.cluster</queue_name>
+      <jclass_name></jclass_name>
+      <slots>4</slots>
+    </job_list>
+  </queue_info>
+  <job_info>
+  </job_info>
+</job_info>

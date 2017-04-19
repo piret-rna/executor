@@ -1,0 +1,9 @@
+<?xml version='1.0'?>
+<unknown_jobs
+  xmlns:xsd="https://github.com/gridengine/gridengine/raw/master/source/dist/util/resources/schemas/qstat/qstat.xsd">
+  <element>
+    <ST_name>25713</ST_name>
+    <ST_pos>0</ST_pos>
+    <ST_access_specifier>0</ST_access_specifier>
+  </element>
+</unknown_jobs>

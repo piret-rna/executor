@@ -32,11 +32,11 @@ public class SGDService extends AbstractExecutor<SGDClusterJob> {
   //
   // ExecutorService executorService = Executors.newFixedThreadPool(2);
   private static ExecutorService executorService;
-  private static ExecutorCompletionService<ClusterJob> completionService;
+  private static ExecutorCompletionService<ClusterJob> jobCompletionService;
 
   // The executor for qstat
   //
-  private static ScheduledExecutorService pollService;
+  private static ScheduledExecutorService jobExecutionPollService;
 
   private static SGDService instance = new SGDService();
 
@@ -44,10 +44,11 @@ public class SGDService extends AbstractExecutor<SGDClusterJob> {
     super();
 
     executorService = Executors.newSingleThreadExecutor();
-    completionService = new ExecutorCompletionService<ClusterJob>(executorService);
+    jobCompletionService = new ExecutorCompletionService<ClusterJob>(executorService);
 
-    pollService = Executors.newSingleThreadScheduledExecutor();
-    pollService.scheduleAtFixedRate(new JobCompletionPoller(), 1, 1, TimeUnit.MINUTES);
+    jobExecutionPollService = Executors.newSingleThreadScheduledExecutor();
+    jobExecutionPollService.scheduleAtFixedRate(new JobExecutionCompletionPoller(), 1, 1,
+        TimeUnit.MINUTES);
 
   }
 
@@ -60,7 +61,7 @@ public class SGDService extends AbstractExecutor<SGDClusterJob> {
 
     SGDClusterJob newJob = new SGDClusterJob(job);
 
-    completionService.submit(newJob);
+    jobCompletionService.submit(newJob);
 
   }
 
@@ -71,7 +72,8 @@ public class SGDService extends AbstractExecutor<SGDClusterJob> {
    * @return
    */
   public synchronized static String getJobStatus(String jobId) {
-    String command[] = { "qstat", "-j", jobId };
+
+    String command[] = { "qstat", "-xml", "-j", jobId };
     Process p;
     try {
 
@@ -112,13 +114,13 @@ public class SGDService extends AbstractExecutor<SGDClusterJob> {
     return null;
   }
 
-  public class JobCompletionPoller implements Runnable {
+  public class JobExecutionCompletionPoller implements Runnable {
 
     @Override
     public void run() {
 
       Future<ClusterJob> finishedJob;
-      while (null != (finishedJob = completionService.poll())) {
+      while (null != (finishedJob = jobCompletionService.poll())) {
         try {
           ClusterJob job = finishedJob.get();
           if (JobCompletionStatus.ENQUEUED.equals(job.getStatus())) {
