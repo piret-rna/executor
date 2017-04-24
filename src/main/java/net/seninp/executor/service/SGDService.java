@@ -73,15 +73,21 @@ public class SGDService extends AbstractExecutor<SGDClusterJob> {
    */
   public synchronized static String getJobStatus(String jobId) {
 
+    // there are two ways to get the job data:
+    // [1] if it's running, we request the QSTAT for that
+    // [2] if it's finished, we can get QACCT for it
+
+    //
+    // try to get qstat
     String command[] = { "qstat", "-xml", "-j", jobId };
-    Process p;
     try {
+
+      Process p;
 
       p = new ProcessBuilder().command(command).start();
 
       p.waitFor();
 
-      // System.out.println(" ... > querying stdOut... ");
       BufferedReader stdOut = new BufferedReader(new InputStreamReader(p.getInputStream()));
       StringBuffer response = new StringBuffer("");
       String line = "";
@@ -90,7 +96,6 @@ public class SGDService extends AbstractExecutor<SGDClusterJob> {
       }
       stdOut.close();
 
-      // System.out.println(" ... > querying stdErr... ");
       if (0 == response.length()) {
         stdOut = new BufferedReader(new InputStreamReader(p.getErrorStream()));
         while ((line = stdOut.readLine()) != null) {
